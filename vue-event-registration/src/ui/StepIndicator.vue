@@ -1,0 +1,36 @@
+<script setup lang="ts">
+defineProps<{
+  /** The label of each step on show, in order. */
+  steps: readonly string[]
+  /** The index of the current step. */
+  current: number
+}>()
+
+defineEmits<{ goTo: [index: number] }>()
+</script>
+
+<template>
+  <nav aria-label="Progress">
+    <ol class="steps">
+      <li
+        v-for="(label, index) in steps"
+        :key="index"
+        class="steps__item"
+        :class="{
+          'steps__item--current': index === current,
+          'steps__item--done': index < current,
+        }"
+      >
+        <button
+          type="button"
+          class="steps__button"
+          :aria-current="index === current ? 'step' : undefined"
+          @click="$emit('goTo', index)"
+        >
+          <span class="steps__number" aria-hidden="true">{{ index + 1 }}</span>
+          <span class="steps__label">{{ label }}</span>
+        </button>
+      </li>
+    </ol>
+  </nav>
+</template>

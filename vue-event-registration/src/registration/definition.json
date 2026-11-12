@@ -1,0 +1,406 @@
+{
+  "$schema": "../../node_modules/@whatsaaaa/form-builder-affects/definition.schema.json",
+  "version": "1",
+  "fields": [
+    {
+      "name": "firstName",
+      "type": "text",
+      "label": "First name",
+      "required": { "message": "Enter your first name" },
+      "rules": [{ "rule": "trim" }, { "rule": "maxLength", "value": 60 }],
+      "ui": { "autocomplete": "given-name" }
+    },
+    {
+      "name": "lastName",
+      "type": "text",
+      "label": "Last name",
+      "required": { "message": "Enter your last name" },
+      "rules": [{ "rule": "trim" }, { "rule": "maxLength", "value": 60 }],
+      "ui": { "autocomplete": "family-name" }
+    },
+    {
+      "name": "email",
+      "type": "email",
+      "label": "Email",
+      "description": "Your ticket is sent here.",
+      "required": { "message": "Enter your email" },
+      "rules": [{ "rule": "email", "message": "Enter a valid email address" }],
+      "ui": { "autocomplete": "email" }
+    },
+    {
+      "name": "phone",
+      "type": "tel",
+      "label": "Phone",
+      "description": "Optional. Only used on the day, if plans change.",
+      "rules": [
+        {
+          "rule": "regex",
+          "pattern": "^\\+?[0-9 ]{6,20}$",
+          "message": "Use digits and spaces, like +385 91 234 5678"
+        }
+      ],
+      "ui": { "autocomplete": "tel" }
+    },
+    {
+      "name": "ticketType",
+      "type": "radio",
+      "label": "Ticket",
+      "required": { "message": "Choose a ticket" },
+      "options": [
+        { "value": "standard", "label": "Standard - 290 EUR" },
+        { "value": "student", "label": "Student - 90 EUR" },
+        { "value": "business", "label": "Business - 490 EUR, with an invoice" }
+      ]
+    },
+    {
+      "name": "studentId",
+      "type": "text",
+      "label": "Student ID",
+      "description": "Bring the card with you. We check it at the door.",
+      "required": { "message": "Enter your student ID" },
+      "rules": [
+        { "rule": "trim" },
+        {
+          "rule": "regex",
+          "pattern": "^[A-Za-z0-9-]{5,20}$",
+          "message": "Use 5 to 20 letters, digits or dashes"
+        }
+      ],
+      "affects": [
+        {
+          "effect": "hideAndClear",
+          "when": { "field": "ticketType", "notEquals": "student" }
+        }
+      ]
+    },
+    {
+      "name": "arrival",
+      "type": "date",
+      "label": "Arrival",
+      "required": { "message": "Pick your arrival day" },
+      "default": "2027-05-10",
+      "rules": [
+        {
+          "rule": "minValue",
+          "value": "2027-05-10",
+          "message": "The event starts on May 10, 2027"
+        },
+        {
+          "rule": "maxValue",
+          "value": "2027-05-12",
+          "message": "The event ends on May 12, 2027"
+        }
+      ]
+    },
+    {
+      "name": "departure",
+      "type": "date",
+      "label": "Departure",
+      "required": { "message": "Pick your departure day" },
+      "default": "2027-05-12",
+      "rules": [
+        {
+          "rule": "minValue",
+          "value": "2027-05-10",
+          "message": "The event starts on May 10, 2027"
+        },
+        {
+          "rule": "maxValue",
+          "value": "2027-05-12",
+          "message": "The event ends on May 12, 2027"
+        }
+      ]
+    },
+    {
+      "name": "sessions",
+      "type": "multiselect",
+      "label": "Sessions",
+      "description": "Pick up to three.",
+      "required": { "message": "Pick at least one session" },
+      "rules": [
+        {
+          "rule": "maxLength",
+          "value": 3,
+          "message": "Pick up to three sessions"
+        }
+      ],
+      "options": [
+        { "value": "keynote", "label": "Opening keynote" },
+        { "value": "workshop", "label": "Hands-on forms workshop" },
+        { "value": "accessibility", "label": "Accessible forms" },
+        { "value": "performance", "label": "Fast forms at scale" },
+        { "value": "lightning", "label": "Lightning talks" }
+      ]
+    },
+    {
+      "name": "workshopLevel",
+      "type": "select",
+      "label": "Workshop level",
+      "description": "We group the workshop tables by experience.",
+      "required": { "message": "Choose your level" },
+      "options": [
+        { "value": "beginner", "label": "Beginner" },
+        { "value": "intermediate", "label": "Intermediate" },
+        { "value": "advanced", "label": "Advanced" }
+      ],
+      "affects": [
+        {
+          "effect": "show",
+          "when": { "field": "sessions", "includes": "workshop" }
+        }
+      ]
+    },
+    {
+      "name": "needsAssistance",
+      "type": "checkbox",
+      "label": "I have access or dietary needs",
+      "default": false
+    },
+    {
+      "name": "assistanceDetails",
+      "type": "textarea",
+      "label": "What do you need?",
+      "required": { "message": "Tell us what you need" },
+      "rules": [
+        { "rule": "trim" },
+        {
+          "rule": "maxLength",
+          "value": 500,
+          "message": "Keep it under 500 characters"
+        }
+      ],
+      "affects": [
+        {
+          "effect": "hideAndClear",
+          "when": { "field": "needsAssistance", "notEquals": true }
+        }
+      ]
+    },
+    {
+      "name": "guests",
+      "type": "array",
+      "label": "Guest list",
+      "description": "Bring up to three guests to the evening reception.",
+      "rules": [
+        { "rule": "maxLength", "value": 3, "message": "Up to three guests" }
+      ],
+      "ui": { "itemLabel": "Guest" },
+      "fields": [
+        {
+          "name": "name",
+          "type": "text",
+          "label": "Name",
+          "required": { "message": "Enter the guest's name" },
+          "rules": [{ "rule": "trim" }, { "rule": "maxLength", "value": 120 }]
+        },
+        {
+          "name": "email",
+          "type": "email",
+          "label": "Email",
+          "description": "Optional. For their own invitation.",
+          "rules": [
+            { "rule": "email", "message": "Enter a valid email address" }
+          ]
+        },
+        {
+          "name": "meal",
+          "type": "select",
+          "label": "Meal",
+          "required": { "message": "Choose a meal" },
+          "default": "standard",
+          "options": [
+            { "value": "standard", "label": "Standard" },
+            { "value": "vegetarian", "label": "Vegetarian" },
+            { "value": "vegan", "label": "Vegan" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "company",
+      "type": "group",
+      "label": "Company",
+      "fields": [
+        {
+          "name": "name",
+          "type": "text",
+          "label": "Company name",
+          "required": { "message": "Enter the company name" },
+          "rules": [{ "rule": "trim" }, { "rule": "maxLength", "value": 120 }],
+          "ui": { "autocomplete": "organization" }
+        },
+        {
+          "name": "vatId",
+          "type": "text",
+          "label": "VAT ID",
+          "description": "Optional.",
+          "rules": [
+            { "rule": "trim" },
+            {
+              "rule": "regex",
+              "pattern": "^[A-Z]{2}[0-9A-Z]{8,12}$",
+              "flags": "i",
+              "message": "Two letters, then 8 to 12 letters or digits"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "billingAddress",
+      "type": "group",
+      "label": "Billing address",
+      "fields": [
+        {
+          "name": "street",
+          "type": "text",
+          "label": "Street and number",
+          "required": { "message": "Enter the street" },
+          "rules": [{ "rule": "trim" }],
+          "ui": { "autocomplete": "street-address" }
+        },
+        {
+          "name": "city",
+          "type": "text",
+          "label": "City",
+          "required": { "message": "Enter the city" },
+          "rules": [{ "rule": "trim" }],
+          "ui": { "autocomplete": "address-level2" }
+        },
+        {
+          "name": "zip",
+          "type": "text",
+          "label": "ZIP code",
+          "required": { "message": "Enter the ZIP code" },
+          "rules": [{ "rule": "trim" }, { "rule": "maxLength", "value": 12 }],
+          "ui": { "autocomplete": "postal-code" }
+        },
+        {
+          "name": "country",
+          "type": "select",
+          "label": "Country",
+          "required": { "message": "Choose a country" },
+          "options": [
+            { "value": "AT", "label": "Austria" },
+            { "value": "HR", "label": "Croatia" },
+            { "value": "DE", "label": "Germany" },
+            { "value": "SI", "label": "Slovenia" }
+          ],
+          "ui": { "autocomplete": "country" }
+        }
+      ]
+    },
+    {
+      "name": "acceptTerms",
+      "type": "checkbox",
+      "label": "I accept the code of conduct",
+      "required": { "message": "Please accept the code of conduct" }
+    },
+    {
+      "name": "newsletter",
+      "type": "checkbox",
+      "label": "Tell me about next year's event",
+      "default": false
+    }
+  ],
+  "formRules": [
+    {
+      "rule": "compare",
+      "field": "departure",
+      "op": "gte",
+      "other": "arrival",
+      "message": "Departure can't be before arrival"
+    },
+    {
+      "rule": "differentFrom",
+      "field": "guests.*.email",
+      "other": "email",
+      "message": "A guest needs an email of their own"
+    }
+  ],
+  "layout": {
+    "steps": [
+      {
+        "id": "you",
+        "label": "About you",
+        "items": [
+          { "type": "row", "items": ["firstName", "lastName"] },
+          {
+            "type": "row",
+            "items": [{ "field": "email", "span": 7 }, "phone"]
+          },
+          "ticketType",
+          "studentId"
+        ]
+      },
+      {
+        "id": "visit",
+        "label": "Your visit",
+        "items": [
+          { "type": "row", "items": ["arrival", "departure"] },
+          "sessions",
+          "workshopLevel",
+          {
+            "type": "section",
+            "id": "assistance",
+            "label": "Access and dietary needs",
+            "description": "Tell us ahead of time, so the venue and the kitchen can prepare.",
+            "items": ["needsAssistance", "assistanceDetails"]
+          }
+        ]
+      },
+      {
+        "id": "guests",
+        "label": "Guests",
+        "items": [
+          {
+            "type": "paragraph",
+            "id": "guests-intro",
+            "text": "The reception is on the evening of May 11. Guests are welcome, and their dinner is on us."
+          },
+          {
+            "field": "guests",
+            "items": [{ "type": "row", "items": ["name", "email"] }, "meal"]
+          }
+        ]
+      },
+      {
+        "id": "invoice",
+        "label": "Invoice",
+        "description": "Business tickets come with an invoice.",
+        "affects": [
+          {
+            "effect": "hideAndClear",
+            "when": { "field": "ticketType", "notEquals": "business" }
+          }
+        ],
+        "items": [
+          {
+            "field": "company",
+            "items": [
+              {
+                "type": "row",
+                "items": [{ "field": "name", "span": 8 }, "vatId"]
+              }
+            ]
+          },
+          {
+            "field": "billingAddress",
+            "items": [
+              "street",
+              {
+                "type": "row",
+                "items": [{ "field": "city", "span": 6 }, "zip", "country"]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "confirm",
+        "label": "Confirm",
+        "items": [{ "type": "slot", "name": "summary" }, "acceptTerms", "*"]
+      }
+    ]
+  }
+}

@@ -1,0 +1,438 @@
+/*
+ * The whole look of the app. It is plain on purpose: the components under src/ui carry the class
+ * names, and this file gives them a look, so a restyle swaps this file and those components only.
+ */
+
+:root {
+  --color-page: #f4f4f2;
+  --color-surface: #ffffff;
+  --color-text: #1c1d1f;
+  --color-muted: #5a5e66;
+  --color-border: #c9ccd1;
+  --color-border-strong: #868b94;
+  --color-accent: #1d4ed8;
+  --color-accent-strong: #1a3fae;
+  --color-on-accent: #ffffff;
+  --color-error: #b42318;
+  --color-error-surface: #fef3f2;
+  --color-success: #17663a;
+  --color-success-surface: #f0f9f3;
+
+  --radius: 6px;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+
+  --control-height: 2.75rem;
+
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
+  font-size: 100%;
+  line-height: 1.5;
+  color: var(--color-text);
+  background: var(--color-page);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+p,
+dl,
+dd,
+ol,
+ul {
+  margin: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Page */
+
+.page {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-4);
+}
+
+.page__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-5);
+  margin-bottom: var(--space-5);
+}
+
+.page__title {
+  font-size: 1.75rem;
+  line-height: 1.2;
+}
+
+.page__lead {
+  margin-top: var(--space-2);
+  color: var(--color-muted);
+}
+
+.status {
+  color: var(--color-muted);
+}
+
+/* Language switch */
+
+.language {
+  display: inline-flex;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius);
+}
+
+.language__button {
+  min-height: 2.25rem;
+  padding: var(--space-1) var(--space-3);
+  cursor: pointer;
+  background: var(--color-surface);
+  border: 0;
+}
+
+.language__button:first-child {
+  border-radius: var(--radius) 0 0 var(--radius);
+}
+
+.language__button:last-child {
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.language__button + .language__button {
+  border-left: 1px solid var(--color-border-strong);
+}
+
+.language__button[aria-pressed='true'] {
+  font-weight: 600;
+  color: var(--color-on-accent);
+  background: var(--color-accent);
+}
+
+/* Form */
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+}
+
+.stack--tight {
+  gap: var(--space-3);
+}
+
+/* Sections */
+
+.card {
+  min-width: 0;
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.card__title {
+  margin-bottom: var(--space-4);
+  font-size: 1.25rem;
+  line-height: 1.3;
+}
+
+.card__lead {
+  margin: calc(-1 * var(--space-3)) 0 var(--space-4);
+  color: var(--color-muted);
+}
+
+/* Fields */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.field__label {
+  padding: 0;
+  font-weight: 600;
+}
+
+.field__required {
+  color: var(--color-error);
+}
+
+.field__hint {
+  font-size: 0.875rem;
+  color: var(--color-muted);
+}
+
+.field__error {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-error);
+}
+
+.input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: var(--control-height);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius);
+}
+
+.input--multiline {
+  resize: vertical;
+}
+
+/* A native select indents its text a little more than an input does. */
+select.input {
+  padding-inline-start: calc(var(--space-3) - 0.25rem);
+}
+
+.field--invalid .input {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 1px var(--color-error);
+}
+
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+.choice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.choice__input {
+  flex: none;
+  width: 1.125rem;
+  height: 1.125rem;
+  margin: 0.1875rem 0 0;
+  accent-color: var(--color-accent);
+}
+
+.choice__label {
+  min-width: 0;
+}
+
+/* Groups and lists */
+
+.group {
+  min-width: 0;
+  margin: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.group__label {
+  padding: 0 var(--space-2);
+  font-weight: 600;
+}
+
+.group__hint {
+  margin-bottom: var(--space-4);
+  font-size: 0.875rem;
+  color: var(--color-muted);
+}
+
+.list__empty {
+  color: var(--color-muted);
+}
+
+.list__item {
+  padding: var(--space-4);
+  background: var(--color-page);
+  border-radius: var(--radius);
+}
+
+.list__item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.list__item-title {
+  font-size: 1rem;
+}
+
+/* Rows: one line of a 12-column grid, stacked on a narrow screen */
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--space-5) var(--space-4);
+}
+
+.row__cell {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+@media (min-width: 40rem) {
+  .row__cell {
+    grid-column: span var(--span, 12);
+  }
+}
+
+/* Buttons */
+
+.button {
+  min-height: var(--control-height);
+  padding: var(--space-2) var(--space-4);
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius);
+}
+
+.button:hover {
+  border-color: var(--color-text);
+}
+
+.button--primary {
+  color: var(--color-on-accent);
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.button--primary:hover {
+  background: var(--color-accent-strong);
+  border-color: var(--color-accent-strong);
+}
+
+.button--wide {
+  width: 100%;
+}
+
+.button:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+.button--quiet {
+  min-height: 2rem;
+  padding: var(--space-1) var(--space-2);
+  font-weight: 400;
+  text-decoration: underline;
+  background: none;
+  border-color: transparent;
+}
+
+/* Summary */
+
+.summary {
+  border-top: 1px solid var(--color-border);
+}
+
+.summary__row--empty {
+  color: var(--color-muted);
+}
+
+.summary__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.summary__term {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.summary__value {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.summary__row--total {
+  font-weight: 600;
+}
+
+/* Notices */
+
+.notice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border: 1px solid;
+  border-radius: var(--radius);
+}
+
+.notice--success {
+  background: var(--color-success-surface);
+  border-color: var(--color-success);
+}
+
+.notice--error {
+  background: var(--color-error-surface);
+  border-color: var(--color-error);
+}
+
+.notice__title {
+  font-size: 1.25rem;
+  line-height: 1.3;
+}
+
+.notice__code {
+  align-self: stretch;
+  max-height: 24rem;
+  margin: 0;
+  padding: var(--space-3);
+  overflow: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.875rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
