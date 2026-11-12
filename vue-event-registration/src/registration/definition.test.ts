@@ -74,7 +74,7 @@ describe('the schema of the registration', () => {
       errorsOf({ ...valid, email: 'ana@example', phone: 'call me' }),
     ).toEqual({
       email: ['Enter a valid email address'],
-      phone: ['Use digits and spaces, like +385 91 234 5678'],
+      phone: ['Use digits and spaces, like +381 61 234 5678'],
     })
   })
 

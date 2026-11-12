@@ -50,7 +50,7 @@ test('registers a business attendee with guests, step by step', async ({
     /Confirm/,
   ])
   await fillAboutYou(page, 'Business')
-  await page.getByRole('textbox', { name: 'Phone' }).fill('+385 91 234 5678')
+  await page.getByRole('textbox', { name: 'Phone' }).fill('+381 61 234 5678')
   await expect(stepLabels(page)).toHaveText([
     /About you/,
     /Your visit/,
@@ -130,7 +130,7 @@ test('registers a business attendee with guests, step by step', async ({
     firstName: 'Ana',
     lastName: 'Horvat',
     email: 'ana@example.com',
-    phone: '+385 91 234 5678',
+    phone: '+381 61 234 5678',
     ticketType: 'business',
     arrival: '2027-05-10',
     departure: '2027-05-11',
@@ -176,7 +176,7 @@ test('keeps the user on a step until its fields are valid', async ({
   await expect(currentStep(page)).toHaveText(/About you/)
   await expect(page.getByText('Enter a valid email address')).toBeVisible()
   await expect(
-    page.getByText('Use digits and spaces, like +385 91 234 5678'),
+    page.getByText('Use digits and spaces, like +381 61 234 5678'),
   ).toBeVisible()
   await expect(page.getByText('Enter your student ID')).toBeVisible()
   await expect(page.getByText('Enter your first name')).toHaveCount(0)

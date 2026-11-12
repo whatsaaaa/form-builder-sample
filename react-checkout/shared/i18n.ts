@@ -19,7 +19,7 @@ export function isLocale(value: unknown): value is Locale {
 const messages = {
   en: {
     'app.title': 'Checkout',
-    'app.lead': 'Paper goods, shipped from Zagreb.',
+    'app.lead': 'Paper goods, shipped from Belgrade.',
     'app.language': 'Language',
     'app.loading': 'Loading the checkout...',
     'app.loadFailed': "The checkout can't be loaded",
@@ -109,7 +109,7 @@ const messages = {
   },
   de: {
     'app.title': 'Kasse',
-    'app.lead': 'Papierwaren, verschickt aus Zagreb.',
+    'app.lead': 'Papierwaren, verschickt aus Belgrad.',
     'app.language': 'Sprache',
     'app.loading': 'Die Kasse wird geladen...',
     'app.loadFailed': 'Die Kasse kann nicht geladen werden',
