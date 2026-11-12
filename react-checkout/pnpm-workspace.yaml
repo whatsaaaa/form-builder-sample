@@ -1,0 +1,6 @@
+allowBuilds:
+  esbuild: true
+minimumReleaseAgeExclude:
+  - '@whatsaaaa/form-builder-schema@1.0.0-rc.0'
+  - '@whatsaaaa/form-builder-react@1.0.0-rc.0'
+  - '@whatsaaaa/form-builder-affects@0.2.2-rc.0'
