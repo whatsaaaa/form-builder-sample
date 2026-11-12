@@ -12,11 +12,11 @@ const app = createApp()
 
 /** An order that passes: one item, shipped, paid by card. */
 const valid = {
-  email: 'jana@example.com',
+  email: 'jelena@example.com',
   lines: [{ product: 'mug', quantity: 2 }],
   delivery: 'standard',
   shipping: {
-    fullName: 'Jana Kovač',
+    fullName: 'Jelena Jovanović',
     street: 'Knez Mihailova 1',
     zip: '11000',
     city: 'Belgrade',
@@ -79,7 +79,7 @@ describe('POST /api/orders', () => {
   it('rejects an order the browser would never send, in the language asked for', async () => {
     const tampered = {
       ...valid,
-      email: 'jana',
+      email: 'jelena',
       lines: [{ product: 'mug', quantity: 'many' }, { quantity: 11 }],
       shipping: { ...valid.shipping, zip: 'ABC' },
       acceptTerms: false,

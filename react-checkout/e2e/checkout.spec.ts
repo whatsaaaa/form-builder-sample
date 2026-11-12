@@ -12,13 +12,13 @@ async function expectNoSidewaysScroll(page: Page) {
 
 /** Fills in an order that is valid: two mugs, shipped to Belgrade, paid by card. */
 async function fillValidOrder(page: Page) {
-  await page.getByRole('textbox', { name: 'Email' }).fill('jana@example.com')
+  await page.getByRole('textbox', { name: 'Email' }).fill('jelena@example.com')
   await page.getByRole('button', { name: 'Add an item' }).click()
   const item = page.getByRole('region', { name: 'Item 1' })
   await item.getByLabel('Product').selectOption('Ceramic mug')
   await item.getByLabel('Quantity').fill('2')
   await page.getByRole('radio', { name: /^Standard/ }).check()
-  await page.getByLabel('Full name').fill('Jana Kovač')
+  await page.getByLabel('Full name').fill('Jelena Jovanović')
   await page.getByLabel('Street and number').fill('Knez Mihailova 1')
   await page.getByLabel('Postal code').fill('11000')
   await page.getByLabel('City').fill('Belgrade')
@@ -67,14 +67,14 @@ test('places an order that the server validates and prices again', async ({
   // The total comes from the server, which worked it out from the validated order.
   await expect(page.getByText('Total paid: €42.40')).toBeVisible()
   expect(await confirmedOrder(page)).toEqual({
-    email: 'jana@example.com',
+    email: 'jelena@example.com',
     lines: [
       { product: 'mug', quantity: 2 },
       { product: 'notebook', quantity: 1 },
     ],
     delivery: 'standard',
     shipping: {
-      fullName: 'Jana Kovač',
+      fullName: 'Jelena Jovanović',
       street: 'Knez Mihailova 1',
       zip: '11000',
       city: 'Belgrade',
@@ -104,7 +104,7 @@ test('stops an invalid order in the browser, before it reaches the server', asyn
   await expectNoSidewaysScroll(page)
 
   // The messages of rules: a format, a whole number in a range, a pattern.
-  await page.getByRole('textbox', { name: 'Email' }).fill('jana@example')
+  await page.getByRole('textbox', { name: 'Email' }).fill('jelena@example')
   await page.getByRole('button', { name: 'Add an item' }).click()
   await page.getByLabel('Quantity').fill('11')
   await page.getByLabel('Postal code').fill('ABC')
@@ -141,7 +141,7 @@ test('shows the fields a condition asks for, and drops what it hides', async ({
   await page.getByRole('radio', { name: /^Invoice/ }).check()
   await page.getByRole('button', { name: 'Place order' }).click()
   await expect(page.getByText('Enter the company name')).toBeVisible()
-  await page.getByLabel('Company name').fill('Kovač d.o.o.')
+  await page.getByLabel('Company name').fill('Jovanović d.o.o.')
   await page.getByRole('button', { name: 'Place order' }).click()
 
   await expect(page.getByText('Total paid: €28.00')).toBeVisible()
@@ -149,7 +149,7 @@ test('shows the fields a condition asks for, and drops what it hides', async ({
     delivery: 'pickup',
     shipping: {},
     paymentMethod: 'invoice',
-    company: 'Kovač d.o.o.',
+    company: 'Jovanović d.o.o.',
   })
 })
 
@@ -202,7 +202,7 @@ test('shows the server rejecting an order that got past the browser', async ({
 test('speaks German in the browser and on the server, and keeps the input', async ({
   page,
 }) => {
-  await page.getByRole('textbox', { name: 'Email' }).fill('jana@example')
+  await page.getByRole('textbox', { name: 'Email' }).fill('jelena@example')
   await page.getByRole('button', { name: 'Add an item' }).click()
   await page.getByLabel('Product').selectOption('Canvas tote bag')
   await page.getByLabel('Quantity').fill('3')
@@ -211,7 +211,7 @@ test('speaks German in the browser and on the server, and keeps the input', asyn
   await page.getByRole('button', { name: 'Deutsch' }).click()
   await expect(page.getByRole('heading', { name: 'Kasse' })).toBeVisible()
   await expect(page.getByRole('textbox', { name: 'E-Mail' })).toHaveValue(
-    'jana@example',
+    'jelena@example',
   )
   await expect(page.getByTestId('summary')).toContainText('3 x Stofftasche')
   await expect(page.getByTestId('summary')).toContainText('54,00 €')
@@ -225,7 +225,7 @@ test('speaks German in the browser and on the server, and keeps the input', asyn
   await expect(page.getByText('Wählen Sie eine Lieferart')).toBeVisible()
   await expectNoSidewaysScroll(page)
 
-  await page.getByRole('textbox', { name: 'E-Mail' }).fill('jana@example.com')
+  await page.getByRole('textbox', { name: 'E-Mail' }).fill('jelena@example.com')
   await page.getByRole('radio', { name: /^Abholung/ }).check()
   await page.getByRole('checkbox', { name: /Verkaufsbedingungen/ }).check()
 

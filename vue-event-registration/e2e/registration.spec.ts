@@ -29,9 +29,9 @@ async function fillAboutYou(
   page: Page,
   ticket: 'Standard' | 'Student' | 'Business',
 ) {
-  await page.getByRole('textbox', { name: 'First name' }).fill('  Ana ')
-  await page.getByRole('textbox', { name: 'Last name' }).fill('Horvat')
-  await page.getByRole('textbox', { name: 'Email' }).fill('ana@example.com')
+  await page.getByRole('textbox', { name: 'First name' }).fill('  Marko ')
+  await page.getByRole('textbox', { name: 'Last name' }).fill('Petrović')
+  await page.getByRole('textbox', { name: 'Email' }).fill('marko@example.com')
   await page.getByRole('radio', { name: new RegExp(`^${ticket}`) }).check()
 }
 
@@ -80,21 +80,25 @@ test('registers a business attendee with guests, step by step', async ({
   await expect(page.getByText('Nothing added yet.')).toBeVisible()
   await page.getByRole('button', { name: 'Add guest' }).click()
   const firstGuest = page.getByRole('region', { name: 'Guest 1' })
-  await firstGuest.getByRole('textbox', { name: 'Name' }).fill('Ivo Horvat')
+  await firstGuest
+    .getByRole('textbox', { name: 'Name' })
+    .fill('Nikola Petrović')
   await firstGuest
     .getByRole('textbox', { name: 'Email' })
-    .fill('ivo@example.com')
+    .fill('nikola@example.com')
   // A new item starts with the defaults of its fields.
   await expect(firstGuest.getByLabel('Meal')).toHaveValue('0')
   await page.getByRole('button', { name: 'Add guest' }).click()
   const secondGuest = page.getByRole('region', { name: 'Guest 2' })
-  await secondGuest.getByRole('textbox', { name: 'Name' }).fill('Mia Novak')
+  await secondGuest
+    .getByRole('textbox', { name: 'Name' })
+    .fill('Milica Nikolić')
   await secondGuest.getByLabel('Meal').selectOption('Vegan')
   await expectNoSidewaysScroll(page)
   await next(page)
 
   await expect(currentStep(page)).toHaveText(/Invoice/)
-  await page.getByLabel('Company name').fill('Horvat d.o.o.')
+  await page.getByLabel('Company name').fill('Petrović d.o.o.')
   await page.getByLabel('VAT ID').fill('RS123456789')
   await page.getByLabel('Street and number').fill('Knez Mihailova 1')
   await page.getByLabel('City').fill('Belgrade')
@@ -111,7 +115,7 @@ test('registers a business attendee with guests, step by step', async ({
   await expect(summary).toContainText(
     'Opening keynote, Hands-on forms workshop',
   )
-  await expect(summary).toContainText('Mia Novak, Vegan')
+  await expect(summary).toContainText('Milica Nikolić, Vegan')
   await expect(summary).toContainText('Serbia')
   await expectNoSidewaysScroll(page)
 
@@ -127,9 +131,9 @@ test('registers a business attendee with guests, step by step', async ({
     (await page.getByTestId('output').textContent()) ?? '',
   ) as unknown
   expect(output).toEqual({
-    firstName: 'Ana',
-    lastName: 'Horvat',
-    email: 'ana@example.com',
+    firstName: 'Marko',
+    lastName: 'Petrović',
+    email: 'marko@example.com',
     phone: '+381 61 234 5678',
     ticketType: 'business',
     arrival: '2027-05-10',
@@ -139,10 +143,14 @@ test('registers a business attendee with guests, step by step', async ({
     needsAssistance: true,
     assistanceDetails: 'Step-free access',
     guests: [
-      { name: 'Ivo Horvat', email: 'ivo@example.com', meal: 'standard' },
-      { name: 'Mia Novak', meal: 'vegan' },
+      {
+        name: 'Nikola Petrović',
+        email: 'nikola@example.com',
+        meal: 'standard',
+      },
+      { name: 'Milica Nikolić', meal: 'vegan' },
     ],
-    company: { name: 'Horvat d.o.o.', vatId: 'RS123456789' },
+    company: { name: 'Petrović d.o.o.', vatId: 'RS123456789' },
     billingAddress: {
       street: 'Knez Mihailova 1',
       city: 'Belgrade',
@@ -170,7 +178,7 @@ test('keeps the user on a step until its fields are valid', async ({
 
   // The messages of rules, and of a field that only shows for a student ticket.
   await fillAboutYou(page, 'Student')
-  await page.getByRole('textbox', { name: 'Email' }).fill('ana@example')
+  await page.getByRole('textbox', { name: 'Email' }).fill('marko@example')
   await page.getByRole('textbox', { name: 'Phone' }).fill('call me')
   await next(page)
   await expect(currentStep(page)).toHaveText(/About you/)
@@ -182,7 +190,7 @@ test('keeps the user on a step until its fields are valid', async ({
   await expect(page.getByText('Enter your first name')).toHaveCount(0)
 
   // A failed step checks itself again as it is fixed.
-  await page.getByRole('textbox', { name: 'Email' }).fill('ana@example.com')
+  await page.getByRole('textbox', { name: 'Email' }).fill('marko@example.com')
   await expect(page.getByText('Enter a valid email address')).toHaveCount(0)
   await page.getByRole('textbox', { name: 'Phone' }).fill('')
   await page.getByLabel('Student ID').fill('ST-2027-01')
@@ -218,11 +226,11 @@ test('keeps the user on a step until its fields are valid', async ({
   await expect(currentStep(page)).toHaveText(/Guests/)
   await page.getByRole('button', { name: 'Add guest' }).click()
   const guest = page.getByRole('region', { name: 'Guest 1' })
-  await guest.getByRole('textbox', { name: 'Email' }).fill('ana@example.com')
+  await guest.getByRole('textbox', { name: 'Email' }).fill('marko@example.com')
   await next(page)
   await expect(currentStep(page)).toHaveText(/Guests/)
   await expect(page.getByText("Enter the guest's name")).toBeVisible()
-  await guest.getByRole('textbox', { name: 'Name' }).fill('Ivo Horvat')
+  await guest.getByRole('textbox', { name: 'Name' }).fill('Nikola Petrović')
   await next(page)
   await expect(currentStep(page)).toHaveText(/Guests/)
   await expect(
@@ -286,7 +294,7 @@ test('moves with Enter and with the step indicator', async ({ page }) => {
   await page.getByRole('button', { name: /About you/ }).click()
   await expect(currentStep(page)).toHaveText(/About you/)
   await expect(page.getByRole('textbox', { name: 'Last name' })).toHaveValue(
-    'Horvat',
+    'Petrović',
   )
 
   // Going forward validates each step on the way, and stops at the first with errors.

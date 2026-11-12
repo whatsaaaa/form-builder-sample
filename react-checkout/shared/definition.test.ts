@@ -55,7 +55,7 @@ describe('the languages', () => {
 
   it('give the same schema its messages, each in its own words', () => {
     const input = {
-      email: 'jana',
+      email: 'jelena',
       lines: [],
       delivery: 'pickup',
       paymentMethod: 'card',
