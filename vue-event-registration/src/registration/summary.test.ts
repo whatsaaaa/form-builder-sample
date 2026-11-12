@@ -30,7 +30,7 @@ const input = {
     street: 'Ilica 1',
     city: 'Zagreb',
     zip: '10000',
-    country: 'HR',
+    country: 'RS',
   },
   newsletter: false,
 }
@@ -78,7 +78,7 @@ describe('summarize', () => {
           { label: 'Street and number', value: 'Ilica 1' },
           { label: 'City', value: 'Zagreb' },
           { label: 'ZIP code', value: '10000' },
-          { label: 'Country', value: 'Croatia' },
+          { label: 'Country', value: 'Serbia' },
         ],
       },
       {

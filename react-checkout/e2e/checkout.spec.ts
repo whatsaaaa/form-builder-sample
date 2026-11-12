@@ -22,7 +22,7 @@ async function fillValidOrder(page: Page) {
   await page.getByLabel('Street and number').fill('Ilica 1')
   await page.getByLabel('Postal code').fill('10000')
   await page.getByLabel('City').fill('Zagreb')
-  await page.getByLabel('Country').selectOption('Croatia')
+  await page.getByLabel('Country').selectOption('Serbia')
   await page.getByRole('checkbox', { name: /terms of sale/ }).check()
 }
 
@@ -78,7 +78,7 @@ test('places an order that the server validates and prices again', async ({
       street: 'Ilica 1',
       zip: '10000',
       city: 'Zagreb',
-      country: 'HR',
+      country: 'RS',
     },
     paymentMethod: 'card',
     coupon: 'SPRING',

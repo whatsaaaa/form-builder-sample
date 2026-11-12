@@ -282,7 +282,7 @@
           "required": { "message": "Choose a country" },
           "options": [
             { "value": "AT", "label": "Austria" },
-            { "value": "HR", "label": "Croatia" },
+            { "value": "RS", "label": "Serbia" },
             { "value": "DE", "label": "Germany" },
             { "value": "SI", "label": "Slovenia" }
           ],

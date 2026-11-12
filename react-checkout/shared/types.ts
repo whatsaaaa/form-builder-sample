@@ -13,7 +13,7 @@ export interface Checkout {
     street?: string
     zip?: string
     city?: string
-    country?: 'AT' | 'HR' | 'DE'
+    country?: 'AT' | 'RS' | 'DE'
   }
   paymentMethod: 'card' | 'invoice'
   company?: string

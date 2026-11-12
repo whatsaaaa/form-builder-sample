@@ -20,7 +20,7 @@ const valid = {
     street: 'Ilica 1',
     zip: '10000',
     city: 'Zagreb',
-    country: 'HR',
+    country: 'RS',
   },
   paymentMethod: 'card',
   acceptTerms: true,
