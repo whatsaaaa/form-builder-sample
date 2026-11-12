@@ -19,7 +19,7 @@ export function isLocale(value: unknown): value is Locale {
 const messages = {
   en: {
     'app.title': 'Checkout',
-    'app.lead': 'Paper goods, shipped from Zagreb.',
+    'app.lead': 'Paper goods, shipped from Belgrade.',
     'app.language': 'Language',
     'app.loading': 'Loading the checkout...',
     'app.loadFailed': "The checkout can't be loaded",
@@ -73,7 +73,7 @@ const messages = {
     'checkout.country.label': 'Country',
     'checkout.country.required': 'Choose a country',
     'checkout.country.AT': 'Austria',
-    'checkout.country.HR': 'Croatia',
+    'checkout.country.RS': 'Serbia',
     'checkout.country.DE': 'Germany',
     'checkout.payment.label': 'Payment method',
     'checkout.payment.required': 'Choose how to pay',
@@ -109,7 +109,7 @@ const messages = {
   },
   de: {
     'app.title': 'Kasse',
-    'app.lead': 'Papierwaren, verschickt aus Zagreb.',
+    'app.lead': 'Papierwaren, verschickt aus Belgrad.',
     'app.language': 'Sprache',
     'app.loading': 'Die Kasse wird geladen...',
     'app.loadFailed': 'Die Kasse kann nicht geladen werden',
@@ -164,7 +164,7 @@ const messages = {
     'checkout.country.label': 'Land',
     'checkout.country.required': 'Wählen Sie ein Land',
     'checkout.country.AT': 'Österreich',
-    'checkout.country.HR': 'Kroatien',
+    'checkout.country.RS': 'Serbien',
     'checkout.country.DE': 'Deutschland',
     'checkout.payment.label': 'Zahlungsart',
     'checkout.payment.required': 'Wählen Sie eine Zahlungsart',

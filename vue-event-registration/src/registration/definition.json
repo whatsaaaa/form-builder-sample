@@ -36,7 +36,7 @@
         {
           "rule": "regex",
           "pattern": "^\\+?[0-9 ]{6,20}$",
-          "message": "Use digits and spaces, like +385 91 234 5678"
+          "message": "Use digits and spaces, like +381 61 234 5678"
         }
       ],
       "ui": { "autocomplete": "tel" }
@@ -282,7 +282,7 @@
           "required": { "message": "Choose a country" },
           "options": [
             { "value": "AT", "label": "Austria" },
-            { "value": "HR", "label": "Croatia" },
+            { "value": "RS", "label": "Serbia" },
             { "value": "DE", "label": "Germany" },
             { "value": "SI", "label": "Slovenia" }
           ],

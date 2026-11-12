@@ -25,7 +25,7 @@ export interface Registration {
     street?: string
     city?: string
     zip?: string
-    country?: 'AT' | 'HR' | 'DE' | 'SI'
+    country?: 'AT' | 'RS' | 'DE' | 'SI'
   }
   acceptTerms: boolean
   newsletter: boolean

@@ -10,9 +10,9 @@ const schema = builder.build(definition)
 
 /** A registration that passes: a standard ticket with nothing optional. */
 const valid = {
-  firstName: 'Ana',
-  lastName: 'Horvat',
-  email: 'ana@example.com',
+  firstName: 'Marko',
+  lastName: 'Petrović',
+  email: 'marko@example.com',
   ticketType: 'standard',
   arrival: '2027-05-10',
   departure: '2027-05-12',
@@ -65,16 +65,20 @@ describe('the registration definition', () => {
 
 describe('the schema of the registration', () => {
   it('accepts a standard ticket, trims text and leaves out what is empty', () => {
-    const output = v.parse(schema, { ...valid, firstName: '  Ana ', phone: '' })
+    const output = v.parse(schema, {
+      ...valid,
+      firstName: '  Marko ',
+      phone: '',
+    })
     expect(output).toEqual(valid)
   })
 
   it('reports the messages of the definition', () => {
     expect(
-      errorsOf({ ...valid, email: 'ana@example', phone: 'call me' }),
+      errorsOf({ ...valid, email: 'marko@example', phone: 'call me' }),
     ).toEqual({
       email: ['Enter a valid email address'],
-      phone: ['Use digits and spaces, like +385 91 234 5678'],
+      phone: ['Use digits and spaces, like +381 61 234 5678'],
     })
   })
 
@@ -115,7 +119,7 @@ describe('the schema of the registration', () => {
   })
 
   it('checks each guest, and the size of the guest list', () => {
-    const guest = { name: 'Ivo Horvat', meal: 'vegan' }
+    const guest = { name: 'Nikola Petrović', meal: 'vegan' }
     expect(
       errorsOf({
         ...valid,

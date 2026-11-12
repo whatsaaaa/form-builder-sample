@@ -114,7 +114,7 @@ export const checkoutDefinition = builders.en.defineForm({
           required: { message: 'checkout.country.required' },
           options: [
             { value: 'AT', label: 'checkout.country.AT' },
-            { value: 'HR', label: 'checkout.country.HR' },
+            { value: 'RS', label: 'checkout.country.RS' },
             { value: 'DE', label: 'checkout.country.DE' },
           ],
           ui: { autocomplete: 'country' },

@@ -12,9 +12,9 @@ function summaryOf(input: Record<string, unknown>) {
 }
 
 const input = {
-  firstName: 'Ana',
-  lastName: 'Horvat',
-  email: 'ana@example.com',
+  firstName: 'Marko',
+  lastName: 'Petrović',
+  email: 'marko@example.com',
   ticketType: 'business',
   arrival: '2027-05-10',
   departure: '2027-05-12',
@@ -22,15 +22,15 @@ const input = {
   workshopLevel: 'advanced',
   needsAssistance: false,
   guests: [
-    { name: 'Ivo Horvat', email: 'ivo@example.com', meal: 'vegan' },
-    { name: 'Mia Novak', meal: 'standard' },
+    { name: 'Nikola Petrović', email: 'nikola@example.com', meal: 'vegan' },
+    { name: 'Milica Nikolić', meal: 'standard' },
   ],
-  company: { name: 'Horvat d.o.o.' },
+  company: { name: 'Petrović d.o.o.' },
   billingAddress: {
-    street: 'Ilica 1',
-    city: 'Zagreb',
-    zip: '10000',
-    country: 'HR',
+    street: 'Knez Mihailova 1',
+    city: 'Belgrade',
+    zip: '11000',
+    country: 'RS',
   },
   newsletter: false,
 }
@@ -42,9 +42,9 @@ describe('summarize', () => {
         id: 'you',
         label: 'About you',
         rows: [
-          { label: 'First name', value: 'Ana' },
-          { label: 'Last name', value: 'Horvat' },
-          { label: 'Email', value: 'ana@example.com' },
+          { label: 'First name', value: 'Marko' },
+          { label: 'Last name', value: 'Petrović' },
+          { label: 'Email', value: 'marko@example.com' },
           { label: 'Ticket', value: 'Business - 490 EUR, with an invoice' },
         ],
       },
@@ -66,19 +66,22 @@ describe('summarize', () => {
         id: 'guests',
         label: 'Guests',
         rows: [
-          { label: 'Guest 1', value: 'Ivo Horvat, ivo@example.com, Vegan' },
-          { label: 'Guest 2', value: 'Mia Novak, Standard' },
+          {
+            label: 'Guest 1',
+            value: 'Nikola Petrović, nikola@example.com, Vegan',
+          },
+          { label: 'Guest 2', value: 'Milica Nikolić, Standard' },
         ],
       },
       {
         id: 'invoice',
         label: 'Invoice',
         rows: [
-          { label: 'Company name', value: 'Horvat d.o.o.' },
-          { label: 'Street and number', value: 'Ilica 1' },
-          { label: 'City', value: 'Zagreb' },
-          { label: 'ZIP code', value: '10000' },
-          { label: 'Country', value: 'Croatia' },
+          { label: 'Company name', value: 'Petrović d.o.o.' },
+          { label: 'Street and number', value: 'Knez Mihailova 1' },
+          { label: 'City', value: 'Belgrade' },
+          { label: 'ZIP code', value: '11000' },
+          { label: 'Country', value: 'Serbia' },
         ],
       },
       {
