@@ -10,7 +10,7 @@ async function expectNoSidewaysScroll(page: Page) {
   expect(overflow).toBeLessThanOrEqual(0)
 }
 
-/** Fills in an order that is valid: two mugs, shipped to Zagreb, paid by card. */
+/** Fills in an order that is valid: two mugs, shipped to Belgrade, paid by card. */
 async function fillValidOrder(page: Page) {
   await page.getByRole('textbox', { name: 'Email' }).fill('jana@example.com')
   await page.getByRole('button', { name: 'Add an item' }).click()
@@ -19,9 +19,9 @@ async function fillValidOrder(page: Page) {
   await item.getByLabel('Quantity').fill('2')
   await page.getByRole('radio', { name: /^Standard/ }).check()
   await page.getByLabel('Full name').fill('Jana Kovač')
-  await page.getByLabel('Street and number').fill('Ilica 1')
-  await page.getByLabel('Postal code').fill('10000')
-  await page.getByLabel('City').fill('Zagreb')
+  await page.getByLabel('Street and number').fill('Knez Mihailova 1')
+  await page.getByLabel('Postal code').fill('11000')
+  await page.getByLabel('City').fill('Belgrade')
   await page.getByLabel('Country').selectOption('Serbia')
   await page.getByRole('checkbox', { name: /terms of sale/ }).check()
 }
@@ -75,9 +75,9 @@ test('places an order that the server validates and prices again', async ({
     delivery: 'standard',
     shipping: {
       fullName: 'Jana Kovač',
-      street: 'Ilica 1',
-      zip: '10000',
-      city: 'Zagreb',
+      street: 'Knez Mihailova 1',
+      zip: '11000',
+      city: 'Belgrade',
       country: 'RS',
     },
     paymentMethod: 'card',

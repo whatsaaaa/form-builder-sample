@@ -17,9 +17,9 @@ const valid = {
   delivery: 'standard',
   shipping: {
     fullName: 'Jana Kovač',
-    street: 'Ilica 1',
-    zip: '10000',
-    city: 'Zagreb',
+    street: 'Knez Mihailova 1',
+    zip: '11000',
+    city: 'Belgrade',
     country: 'RS',
   },
   paymentMethod: 'card',

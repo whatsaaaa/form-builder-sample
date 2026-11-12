@@ -96,9 +96,9 @@ test('registers a business attendee with guests, step by step', async ({
   await expect(currentStep(page)).toHaveText(/Invoice/)
   await page.getByLabel('Company name').fill('Horvat d.o.o.')
   await page.getByLabel('VAT ID').fill('RS123456789')
-  await page.getByLabel('Street and number').fill('Ilica 1')
-  await page.getByLabel('City').fill('Zagreb')
-  await page.getByLabel('ZIP code').fill('10000')
+  await page.getByLabel('Street and number').fill('Knez Mihailova 1')
+  await page.getByLabel('City').fill('Belgrade')
+  await page.getByLabel('ZIP code').fill('11000')
   await page.getByLabel('Country').selectOption('Serbia')
   await expectNoSidewaysScroll(page)
   await next(page)
@@ -144,9 +144,9 @@ test('registers a business attendee with guests, step by step', async ({
     ],
     company: { name: 'Horvat d.o.o.', vatId: 'RS123456789' },
     billingAddress: {
-      street: 'Ilica 1',
-      city: 'Zagreb',
-      zip: '10000',
+      street: 'Knez Mihailova 1',
+      city: 'Belgrade',
+      zip: '11000',
       country: 'RS',
     },
     acceptTerms: true,
