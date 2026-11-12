@@ -18,6 +18,7 @@ import { components } from '../ui/fields'
 import { layoutComponents } from '../ui/layout'
 import { Notice } from '../ui/Notice'
 import { OrderSummary } from '../ui/OrderSummary'
+import { Stack } from '../ui/Stack'
 import { placeOrder } from './api'
 
 /** What the parent can ask of the form: its input now, to carry it over to another language. */
@@ -114,7 +115,7 @@ export function CheckoutForm({
         slots={{
           summary: <OrderSummary total={total} />,
           submit: (
-            <div className="stack stack--tight">
+            <Stack tight>
               {failure && <Notice tone="error">{failure}</Notice>}
               <Button
                 type="submit"
@@ -126,7 +127,7 @@ export function CheckoutForm({
                   ? t('checkout.submitting')
                   : t('checkout.submit')}
               </Button>
-            </div>
+            </Stack>
           ),
         }}
       />

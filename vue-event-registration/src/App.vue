@@ -5,6 +5,8 @@ import json from './registration/definition.json'
 import { InvalidDefinitionError, loadDefinition } from './registration/builder'
 import RegistrationForm from './registration/RegistrationForm.vue'
 import type { Registration } from './registration/types'
+import ActionButton from './ui/ActionButton.vue'
+import CodeBlock from './ui/CodeBlock.vue'
 import NoticePanel from './ui/NoticePanel.vue'
 import PageShell from './ui/PageShell.vue'
 
@@ -48,12 +50,11 @@ function startOver() {
         {{ registration.email }}.
       </p>
       <p>This is what the form submitted:</p>
-      <pre class="notice__code" data-testid="output">{{
-        JSON.stringify(registration, null, 2)
-      }}</pre>
-      <button type="button" class="button" @click="startOver">
-        Register someone else
-      </button>
+      <CodeBlock
+        :code="JSON.stringify(registration, null, 2)"
+        data-testid="output"
+      />
+      <ActionButton @click="startOver">Register someone else</ActionButton>
     </NoticePanel>
     <RegistrationForm
       v-else

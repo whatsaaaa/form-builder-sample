@@ -130,8 +130,7 @@
         { "value": "accessibility", "label": "Accessible forms" },
         { "value": "performance", "label": "Fast forms at scale" },
         { "value": "lightning", "label": "Lightning talks" }
-      ],
-      "ui": { "widget": "checkboxes" }
+      ]
     },
     {
       "name": "workshopLevel",

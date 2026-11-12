@@ -7,8 +7,10 @@ import { CheckoutForm, type CheckoutFormHandle } from './checkout/CheckoutForm'
 import { useLocale } from './locale/context'
 import { LocaleProvider } from './locale/LocaleProvider'
 import { Button } from './ui/Button'
+import { CodeBlock } from './ui/CodeBlock'
 import { Notice } from './ui/Notice'
 import { PageShell } from './ui/PageShell'
+import { StatusLine } from './ui/StatusLine'
 
 type Loading =
   | { status: 'loading' }
@@ -106,11 +108,7 @@ export function App() {
 
 function Status({ messageKey }: { messageKey: string }) {
   const { t } = useLocale()
-  return (
-    <p className="status" role="status">
-      {t(messageKey)}
-    </p>
-  )
+  return <StatusLine>{t(messageKey)}</StatusLine>
 }
 
 function LoadFailed({ onRetry }: { onRetry: () => void }) {
@@ -139,9 +137,9 @@ function OrderPlaced({
       <p>
         {t('done.total')}: <strong>{money(order.total)}</strong>
       </p>
-      <pre className="notice__code" data-testid="order">
+      <CodeBlock data-testid="order">
         {JSON.stringify(order.order, null, 2)}
-      </pre>
+      </CodeBlock>
       <Button onClick={onAgain}>{t('done.again')}</Button>
     </Notice>
   )

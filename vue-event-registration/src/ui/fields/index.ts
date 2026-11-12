@@ -1,7 +1,5 @@
 import type { FieldComponents } from '@whatsaaaa/form-builder-vue'
 import CheckboxInput from './CheckboxInput.vue'
-import FormDivider from './FormDivider.vue'
-import FormHeading from './FormHeading.vue'
 import FormParagraph from './FormParagraph.vue'
 import GroupFieldset from './GroupFieldset.vue'
 import ListRepeater from './ListRepeater.vue'
@@ -15,13 +13,8 @@ import TextInput from './TextInput.vue'
 export const components: FieldComponents = {
   text: TextInput,
   email: TextInput,
-  password: TextInput,
-  url: TextInput,
   tel: TextInput,
-  number: TextInput,
   date: TextInput,
-  time: TextInput,
-  datetime: TextInput,
   textarea: TextareaInput,
   checkbox: CheckboxInput,
   select: SelectInput,
@@ -29,7 +22,5 @@ export const components: FieldComponents = {
   multiselect: MultiselectInput,
   group: GroupFieldset,
   array: ListRepeater,
-  heading: FormHeading,
   paragraph: FormParagraph,
-  divider: FormDivider,
 }

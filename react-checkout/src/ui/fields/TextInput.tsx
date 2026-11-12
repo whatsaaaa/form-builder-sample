@@ -7,13 +7,7 @@ import { describedBy, uiHint } from './hints'
 // The native input for each type. The rest are text.
 const inputTypes: Record<string, string> = {
   email: 'email',
-  password: 'password',
   number: 'number',
-  url: 'url',
-  tel: 'tel',
-  date: 'date',
-  time: 'time',
-  datetime: 'datetime-local',
 }
 
 export function TextInput({

@@ -11,13 +11,7 @@ import { TextInput } from './TextInput'
 export const components: FieldComponents = {
   text: TextInput,
   email: TextInput,
-  password: TextInput,
-  url: TextInput,
-  tel: TextInput,
   number: TextInput,
-  date: TextInput,
-  time: TextInput,
-  datetime: TextInput,
   textarea: TextareaInput,
   checkbox: CheckboxInput,
   select: SelectInput,

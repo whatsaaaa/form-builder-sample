@@ -5,8 +5,10 @@ import { JsonFields, useJsonForm } from '@whatsaaaa/form-builder-vue'
 import { computed, nextTick, useTemplateRef, watch } from 'vue'
 import { components } from '../ui/fields'
 import FormActions from '../ui/FormActions.vue'
+import FormFrame from '../ui/FormFrame.vue'
 import { layoutComponents } from '../ui/layout'
 import StepIndicator from '../ui/StepIndicator.vue'
+import StepPanel from '../ui/StepPanel.vue'
 import SummaryList from '../ui/SummaryList.vue'
 import { builder } from './builder'
 import { summarize } from './summary'
@@ -26,12 +28,12 @@ const stepLabels = computed(() =>
 )
 
 // A new step starts at its title, so keyboard and screen reader users land on what changed.
-const stepTitle = useTemplateRef('stepTitle')
+const stepPanel = useTemplateRef('stepPanel')
 watch(
   () => jsonForm.steps.current,
   async () => {
     await nextTick()
-    stepTitle.value?.focus()
+    stepPanel.value?.focusTitle()
   },
 )
 
@@ -46,41 +48,30 @@ const summary = computed(() =>
 </script>
 
 <template>
-  <Form
-    :of="jsonForm.form"
-    class="form"
-    @submit="(output) => emit('submitted', output)"
-  >
-    <StepIndicator
-      :steps="stepLabels"
-      :current="jsonForm.steps.index"
-      @go-to="jsonForm.steps.goTo($event)"
-    />
-    <section class="form__step" aria-labelledby="step-title">
-      <h2
-        id="step-title"
-        ref="stepTitle"
-        class="form__step-title"
-        tabindex="-1"
+  <Form :of="jsonForm.form" @submit="(output) => emit('submitted', output)">
+    <FormFrame>
+      <StepIndicator
+        :steps="stepLabels"
+        :current="jsonForm.steps.index"
+        @go-to="jsonForm.steps.goTo($event)"
+      />
+      <StepPanel
+        ref="stepPanel"
+        :title="jsonForm.steps.current.step.label"
+        :lead="jsonForm.steps.current.step.description"
       >
-        {{ jsonForm.steps.current.step.label }}
-      </h2>
-      <p v-if="jsonForm.steps.current.step.description" class="form__step-lead">
-        {{ jsonForm.steps.current.step.description }}
-      </p>
-      <div class="stack">
         <JsonFields :of="jsonForm">
           <template #summary>
             <SummaryList :sections="summary" />
           </template>
         </JsonFields>
-      </div>
-    </section>
-    <FormActions
-      :is-first="jsonForm.steps.isFirst"
-      :is-last="jsonForm.steps.isLast"
-      submit-label="Register"
-      @back="jsonForm.steps.back()"
-    />
+      </StepPanel>
+      <FormActions
+        :is-first="jsonForm.steps.isFirst"
+        :is-last="jsonForm.steps.isLast"
+        submit-label="Register"
+        @back="jsonForm.steps.back()"
+      />
+    </FormFrame>
   </Form>
 </template>
