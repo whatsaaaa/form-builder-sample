@@ -17,6 +17,8 @@
   --control-height: var(--ws-space-40);
   /* A tick, drawn as a mask like the design system's icons: only its shape counts. It fills its box. */
   --icon-check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='2 2 12 12' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8.5 6.5 12 13 4.5'/%3E%3C/svg%3E");
+  /* A calendar for the date picker's button, the same way. */
+  --icon-calendar: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='1.5 1.25 13 13' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2.5' y='3.5' width='11' height='10' rx='1.5'/%3E%3Cpath d='M2.5 6.5h11M5.5 2v3M10.5 2v3'/%3E%3C/svg%3E");
 }
 
 @media (width < 64rem) {
@@ -346,6 +348,17 @@ body {
   border-color: var(--ws-color-text-secondary);
 }
 
+/* The date picker's button, drawn like the select's arrow: in the system's color, on the field's padding. */
+.input::-webkit-calendar-picker-indicator {
+  width: var(--ws-space-16);
+  height: var(--ws-space-16);
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  background: var(--ws-color-text-secondary);
+  mask: var(--icon-calendar) center / contain no-repeat;
+}
+
 .input--multiline {
   height: auto;
   min-height: var(--control-height);
@@ -368,7 +381,7 @@ body {
 .select::after {
   position: absolute;
   top: 50%;
-  right: var(--ws-space-12);
+  right: calc(var(--ws-space-12) + var(--ws-border-width-thin));
   width: var(--ws-space-12);
   height: var(--ws-space-12);
   content: '';
@@ -708,6 +721,21 @@ body {
 .notice .ws-code {
   align-self: stretch;
   margin: 0;
+}
+
+/*
+ * What a person typed can be long. Its line wraps inside the block, and the rest of it starts one
+ * level in from the line's own text, so the shape of the JSON still reads.
+ */
+.code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.code__line {
+  display: block;
+  padding-left: calc(var(--hang) * 1ch);
+  text-indent: calc(var(--hang) * -1ch);
 }
 
 @media (width < 64rem) {
