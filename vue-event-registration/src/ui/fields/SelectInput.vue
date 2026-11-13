@@ -25,25 +25,28 @@ const selected = computed(() =>
     :errors="errors"
     :required="required"
   >
-    <select
-      v-bind="inputProps"
-      :id="id"
-      class="input"
-      :value="selected"
-      :required="required"
-      :autocomplete="uiHint(field, 'autocomplete')"
-      :aria-invalid="errors ? 'true' : undefined"
-      :aria-describedby="describedBy(id, field.description, errors)"
-      @change="
-        setInput(
-          options[Number(($event.target as HTMLSelectElement).value)]?.value,
-        )
-      "
-    >
-      <option :value="-1">Choose...</option>
-      <option v-for="(option, index) in options" :key="index" :value="index">
-        {{ option.label }}
-      </option>
-    </select>
+    <!-- The box draws the arrow: a select of its own look has none. -->
+    <div class="select">
+      <select
+        v-bind="inputProps"
+        :id="id"
+        class="input"
+        :value="selected"
+        :required="required"
+        :autocomplete="uiHint(field, 'autocomplete')"
+        :aria-invalid="errors ? 'true' : undefined"
+        :aria-describedby="describedBy(id, field.description, errors)"
+        @change="
+          setInput(
+            options[Number(($event.target as HTMLSelectElement).value)]?.value,
+          )
+        "
+      >
+        <option :value="-1">Choose...</option>
+        <option v-for="(option, index) in options" :key="index" :value="index">
+          {{ option.label }}
+        </option>
+      </select>
+    </div>
   </FieldShell>
 </template>

@@ -2,7 +2,8 @@
 import { describedBy } from './a11y'
 
 // The frame every field shares: its label, hint and error. A set of inputs, like radios, is a
-// fieldset with a legend instead of a label.
+// fieldset with a legend instead of a label. No input has a placeholder: the hint, from the
+// definition's `description`, goes under it.
 defineProps<{
   id: string
   label?: string
