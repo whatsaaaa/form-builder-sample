@@ -1,10 +1,93 @@
-import type { ReactNode } from 'react'
+import { enableShortcuts, isTyping } from '@whatsaaaa/design-system/shortcuts'
+import { toggleTheme } from '@whatsaaaa/design-system/theme'
+import { useEffect, useState } from 'react'
 
-/** A line about what the page is doing, like loading. */
-export function StatusLine({ children }: { children: ReactNode }) {
+type Mode = 'NORMAL' | 'INSERT'
+
+/**
+ * NORMAL while single keys are shortcuts, INSERT while they are typed into a field. It says
+ * whether the key hints next to it work right now.
+ */
+function currentMode(): Mode {
+  return isTyping(document.activeElement) ? 'INSERT' : 'NORMAL'
+}
+
+/**
+ * The bottom of the window, the design system's status line: the mode, the app's path, the
+ * theme switch and the switch for the shortcut keys.
+ */
+export function StatusLine() {
+  const [mode, setMode] = useState<Mode>('NORMAL')
+
+  useEffect(() => {
+    const updateMode = () => {
+      setMode(currentMode())
+    }
+    updateMode()
+    document.addEventListener('focusin', updateMode)
+    document.addEventListener('focusout', updateMode)
+    const disableShortcuts = enableShortcuts()
+    return () => {
+      document.removeEventListener('focusin', updateMode)
+      document.removeEventListener('focusout', updateMode)
+      disableShortcuts()
+    }
+  }, [])
+
   return (
-    <p className="status" role="status">
-      {children}
-    </p>
+    <footer className="ws-status-line" aria-label="Status">
+      <span className="ws-status-line__mode">{mode}</span>
+      {/* The room left in the line, which the path shows in whole or not at all. */}
+      <span className="status-line__path">
+        <span className="ws-status-line__file">
+          <span>~/react-checkout</span>
+        </span>
+      </span>
+      {/* Each hint is the control it names: the key clicks the button. */}
+      <span className="ws-status-line__keys">
+        <button
+          type="button"
+          data-ws-key="t"
+          aria-label="Switch theme"
+          onClick={toggleTheme}
+        >
+          <kbd className="ws-kbd">t</kbd>theme
+        </button>
+      </span>
+      {/* The shortcuts module gives the switch its state. Until then the styles keep it hidden. */}
+      <button
+        type="button"
+        className="ws-status-line__switch"
+        role="switch"
+        aria-label="Shortcut keys"
+        data-ws-keys-switch
+      >
+        keys
+        <span className="ws-status-line__on" aria-hidden="true">
+          on
+        </span>
+        <span className="ws-status-line__off" aria-hidden="true">
+          off
+        </span>
+      </button>
+      {/*
+        The name of the theme, which also switches it: the hints above are hidden on a narrow
+        screen, and this is not. Both names are in the page and the styles show the theme's one.
+      */}
+      <ThemeName theme="dark" name="rose-pine" />
+      <ThemeName theme="light" name="rose-pine-dawn" />
+    </footer>
+  )
+}
+
+function ThemeName({ theme, name }: { theme: 'dark' | 'light'; name: string }) {
+  return (
+    <button
+      type="button"
+      className={`status-line__theme ws-status-line__item ws-status-line__item--edge ws-status-line__item--${theme}`}
+      onClick={toggleTheme}
+    >
+      <span className="visually-hidden">Switch theme, now</span> {name}
+    </button>
   )
 }

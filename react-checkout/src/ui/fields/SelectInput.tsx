@@ -25,26 +25,29 @@ export function SelectInput({
       errors={errors}
       required={required}
     >
-      <select
-        {...inputProps}
-        id={id}
-        className="input"
-        value={selected}
-        required={required}
-        autoComplete={uiHint(field, 'autocomplete')}
-        aria-invalid={errors ? true : undefined}
-        aria-describedby={describedBy(id, field.description, errors)}
-        onChange={(event) => {
-          setInput(options[Number(event.target.value)]?.value)
-        }}
-      >
-        <option value={-1}>{t('form.choose')}</option>
-        {options.map((option, index) => (
-          <option key={index} value={index}>
-            {t(option.label)}
-          </option>
-        ))}
-      </select>
+      {/* The box draws the arrow: a select of its own look has none. */}
+      <div className="select">
+        <select
+          {...inputProps}
+          id={id}
+          className="input"
+          value={selected}
+          required={required}
+          autoComplete={uiHint(field, 'autocomplete')}
+          aria-invalid={errors ? true : undefined}
+          aria-describedby={describedBy(id, field.description, errors)}
+          onChange={(event) => {
+            setInput(options[Number(event.target.value)]?.value)
+          }}
+        >
+          <option value={-1}>{t('form.choose')}</option>
+          {options.map((option, index) => (
+            <option key={index} value={index}>
+              {t(option.label)}
+            </option>
+          ))}
+        </select>
+      </div>
     </FieldShell>
   )
 }

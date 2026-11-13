@@ -1,178 +1,328 @@
 /*
- * The whole look of the app. It is plain on purpose: the components under src/ui carry the class
- * names, and this file gives them a look, so a restyle swaps this file and those components only.
+ * The whole look of the app, on the Whatsaaaa design system. The design system brings the fonts,
+ * the tokens and the terminal frame; this file lays the page out in that frame and gives the form
+ * controls, which the design system leaves to each app, their look from its roles. The components
+ * under src/ui carry the class names, so a restyle swaps this file and those components only.
  */
 
+@import '@whatsaaaa/design-system/index.css';
+
 :root {
-  --color-page: #f4f4f2;
-  --color-surface: #ffffff;
-  --color-text: #1c1d1f;
-  --color-muted: #5a5e66;
-  --color-border: #c9ccd1;
-  --color-border-strong: #868b94;
-  --color-accent: #1d4ed8;
-  --color-accent-strong: #1a3fae;
-  --color-on-accent: #ffffff;
-  --color-error: #b42318;
-  --color-error-surface: #fef3f2;
-  --color-success: #17663a;
-  --color-success-surface: #f0f9f3;
-
-  --radius: 6px;
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.5rem;
-  --space-6: 2rem;
-
-  --control-height: 2.75rem;
-
-  font-family:
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    sans-serif;
-  font-size: 100%;
-  line-height: 1.5;
-  color: var(--color-text);
-  background: var(--color-page);
+  /*
+   * The space between the window's edge and what is in it: the tab bar's own, so the edges of the
+   * form line up with the brand on the left and with the links on the right.
+   */
+  --page-gutter: var(--ws-space-20);
+  /* The height of a one-line field and of a button. */
+  --control-height: var(--ws-space-40);
+  /* A tick, drawn as a mask like the design system's icons: only its shape counts. It fills its box. */
+  --icon-check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='2 2 12 12' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8.5 6.5 12 13 4.5'/%3E%3C/svg%3E");
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+@media (width < 64rem) {
+  :root {
+    --page-gutter: var(--ws-space-16);
+  }
 }
 
-body {
-  margin: 0;
-}
-
-h1,
-h2,
-h3,
-p,
-dl,
-dd,
-ol,
-ul {
-  margin: 0;
-}
-
-button,
-input,
-select,
-textarea {
-  font: inherit;
-  color: inherit;
-}
-
-:focus-visible {
-  outline: 3px solid var(--color-accent);
-  outline-offset: 2px;
-}
-
-/* Page */
-
-.page {
-  max-width: 64rem;
-  margin: 0 auto;
-  padding: var(--space-6) var(--space-4);
-}
-
-.page__header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-3) var(--space-5);
-  margin-bottom: var(--space-5);
-}
-
-.page__title {
-  font-size: 1.75rem;
-  line-height: 1.2;
-}
-
-.page__lead {
-  margin-top: var(--space-2);
-  color: var(--color-muted);
-}
-
-.status {
-  color: var(--color-muted);
-}
-
-/* Language switch */
-
-.language {
-  display: inline-flex;
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius);
-}
-
-.language__button {
-  min-height: 2.25rem;
-  padding: var(--space-1) var(--space-3);
-  cursor: pointer;
-  background: var(--color-surface);
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
   border: 0;
 }
 
+/* The window: as tall as the screen, as wide as the form. Its content scrolls inside it. */
+
+body {
+  padding: var(--ws-space-20);
+}
+
+.page {
+  max-width: calc(
+    var(--ws-size-content) + 2 * var(--page-gutter) + 2 *
+      var(--ws-border-width-thin)
+  );
+  height: calc(100dvh - 2 * var(--ws-space-20));
+  margin-inline: auto;
+}
+
+.page__main {
+  overflow: auto;
+}
+
+.page__content {
+  padding: var(--ws-space-40) var(--page-gutter) var(--ws-space-48);
+}
+
+/* On a narrow screen the window grows with the form, and the page scrolls. */
+@media (width < 64rem) {
+  body {
+    padding: var(--ws-space-12);
+  }
+
+  .page {
+    height: auto;
+    min-height: calc(100dvh - 2 * var(--ws-space-12));
+  }
+
+  .page__main {
+    overflow: visible;
+  }
+
+  .page__content {
+    padding-block: var(--ws-space-24) var(--ws-space-40);
+  }
+}
+
+/* Tab bar */
+
+/*
+ * The mark at 32 px, two screen pixels to a sprite pixel. Its file keeps two empty sprite columns
+ * on each side, so it reaches past its box by them: its pixels start where the form does, and
+ * they stand off the name by the bar's own gap.
+ */
+.tab-bar__mark {
+  width: var(--ws-space-32);
+  height: var(--ws-space-32);
+  margin-inline: calc(-1 * var(--ws-space-4));
+}
+
+/*
+ * The cut of the mark for the page's theme. The same rule as the design system's for the name of
+ * the theme in the status line: an image has no token to switch.
+ */
+[data-theme='dark'] .tab-bar__mark--light,
+[data-theme='light'] .tab-bar__mark--dark {
+  display: none;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) .tab-bar__mark--dark {
+    display: none;
+  }
+}
+
+@media not (prefers-color-scheme: light) {
+  :root:not([data-theme]) .tab-bar__mark--light {
+    display: none;
+  }
+}
+
+/* The ghost keeps its body in the text color, as everywhere. */
+.ws-tab-bar__end .tab-bar__ghost {
+  color: var(--ws-color-text);
+  line-height: 0;
+}
+
+/* Status line */
+
+/*
+ * The path is what gives way on a narrow screen, so the switches after it always fit. Its box
+ * takes the room left in the line, as the spacer would: the path shrinks to its ellipsis in it,
+ * and goes as a whole once "~…" no longer fits inside its padding. The padding is the path's own
+ * --ws-space-14 on each side, as a container query takes no var().
+ */
+.status-line__path {
+  display: flex;
+  flex: 1;
+  container-type: inline-size;
+}
+
+@container (width < calc(2ch + 2 * 0.875rem)) {
+  .ws-status-line__file {
+    display: none;
+  }
+}
+
+.status-line__theme {
+  margin: 0;
+  border-block: 0;
+  border-right: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  background: none;
+}
+
+.status-line__theme:hover {
+  color: var(--ws-color-text);
+}
+
+/*
+ * The focus ring of a control in the status line goes inside it, as the keys switch's does: the
+ * line cuts off what reaches past its edges. A key hint gets room for the ring from the gap
+ * around it, so nothing moves.
+ */
+.ws-status-line__keys :is(button, a) {
+  margin-inline: calc(-1 * var(--ws-space-6));
+  padding-inline: var(--ws-space-6);
+}
+
+.ws-status-line__keys :is(button, a):focus-visible,
+.status-line__theme:focus-visible {
+  outline-offset: calc(-1 * var(--ws-border-width-medium));
+}
+
+/* The theme's name is the last item, in the window's corner: its ring follows that curve. */
+.status-line__theme:focus-visible {
+  border-radius: var(--ws-radius-sm) var(--ws-radius-sm)
+    calc(var(--ws-radius-xl) - var(--ws-border-width-thin)) var(--ws-radius-sm);
+}
+
+/* Page header: the title and its lead, with the switch between languages beside the title. */
+
+.page__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: var(--ws-space-24);
+  margin-bottom: var(--ws-space-32);
+}
+
+.page__title {
+  font: var(--ws-text-h1);
+  letter-spacing: var(--ws-text-h1-letter-spacing);
+}
+
+.page__lead {
+  margin-top: var(--ws-space-8);
+  color: var(--ws-color-text-secondary);
+  font: var(--ws-text-lead);
+}
+
+.language {
+  display: flex;
+  grid-row: 1;
+  grid-column: 2;
+  align-self: center;
+}
+
+@media (width < 64rem) {
+  .page__title {
+    font: var(--ws-text-h1-compact);
+    letter-spacing: var(--ws-text-h1-compact-letter-spacing);
+  }
+
+  /* A title and two language names do not fit one line of a phone: the switch goes under the lead. */
+  .page__header {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .language {
+    grid-row: auto;
+    grid-column: 1;
+    justify-self: start;
+    margin-top: var(--ws-space-16);
+  }
+}
+
+/* Language switch: two buttons that share an edge. The pressed one is filled, like a checked radio. */
+
+.language__button {
+  min-height: var(--control-height);
+  margin: 0;
+  padding: 0 var(--ws-space-16);
+  border: var(--ws-border-width-thin) solid var(--ws-color-field-border);
+  color: var(--ws-color-text-secondary);
+  font: var(--ws-text-label);
+  font-weight: var(--ws-font-weight-semibold);
+  cursor: pointer;
+  background: none;
+}
+
 .language__button:first-child {
-  border-radius: var(--radius) 0 0 var(--radius);
+  border-radius: var(--ws-radius-md) 0 0 var(--ws-radius-md);
 }
 
 .language__button:last-child {
-  border-radius: 0 var(--radius) var(--radius) 0;
+  border-radius: 0 var(--ws-radius-md) var(--ws-radius-md) 0;
 }
 
+/* The shared edge is one line: the pressed or hovered button draws it, on top of the other. */
 .language__button + .language__button {
-  border-left: 1px solid var(--color-border-strong);
+  margin-left: calc(-1 * var(--ws-border-width-thin));
+}
+
+.language__button:hover {
+  position: relative;
+  border-color: var(--ws-color-text-secondary);
+  color: var(--ws-color-text);
+  background: var(--ws-color-raised);
 }
 
 .language__button[aria-pressed='true'] {
-  font-weight: 600;
-  color: var(--color-on-accent);
-  background: var(--color-accent);
+  position: relative;
+  border-color: var(--ws-color-interactive);
+  color: var(--ws-color-on-interactive);
+  cursor: default;
+  background: var(--ws-color-interactive);
 }
 
-/* Form */
+.language__button:focus-visible {
+  position: relative;
+  z-index: 1;
+}
+
+/* The line the page shows while the checkout loads. */
+.status-message {
+  color: var(--ws-color-text-secondary);
+  font: var(--ws-text-label);
+}
+
+/* Sections: the parts of the checkout, each with a title, one under the other. */
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ws-space-32);
+  min-width: 0;
+}
+
+.sections > * + * {
+  padding-top: var(--ws-space-32);
+  border-top: var(--ws-border-width-thin) solid var(--ws-color-border);
+}
+
+.section {
+  min-width: 0;
+}
+
+.section__title {
+  font: var(--ws-text-h2);
+  letter-spacing: var(--ws-text-h2-letter-spacing);
+}
+
+.section__lead {
+  margin-top: var(--ws-space-4);
+  color: var(--ws-color-text-secondary);
+  font: var(--ws-text-body-sm);
+}
+
+.section > .stack {
+  margin-top: var(--ws-space-24);
+}
+
+@media (width < 64rem) {
+  .section__title {
+    font: var(--ws-text-h2-compact);
+    letter-spacing: var(--ws-text-h2-compact-letter-spacing);
+  }
+}
 
 .stack {
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: var(--ws-space-24);
   min-width: 0;
 }
 
 .stack--tight {
-  gap: var(--space-3);
-}
-
-/* Sections */
-
-.card {
-  min-width: 0;
-  padding: var(--space-5);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-}
-
-.card__title {
-  margin-bottom: var(--space-4);
-  font-size: 1.25rem;
-  line-height: 1.3;
-}
-
-.card__lead {
-  margin: calc(-1 * var(--space-3)) 0 var(--space-4);
-  color: var(--color-muted);
+  gap: var(--ws-space-16);
 }
 
 /* Fields */
@@ -180,7 +330,7 @@ textarea {
 .field {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: var(--ws-space-6);
   min-width: 0;
   margin: 0;
   padding: 0;
@@ -189,115 +339,255 @@ textarea {
 
 .field__label {
   padding: 0;
-  font-weight: 600;
+  color: var(--ws-color-text);
+  font: var(--ws-text-label);
 }
 
 .field__required {
-  color: var(--color-error);
+  color: var(--ws-color-brand);
 }
 
 .field__hint {
-  font-size: 0.875rem;
-  color: var(--color-muted);
+  color: var(--ws-color-text-secondary);
+  font: var(--ws-text-body-sm);
 }
 
+/* An error is a word with the danger icon before it, never a color alone. */
 .field__error {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--color-error);
+  display: flex;
+  gap: var(--ws-space-6);
+  color: var(--ws-color-danger-text);
+  font: var(--ws-text-body-sm);
+  font-weight: var(--ws-font-weight-medium);
+}
+
+.field__error::before {
+  flex: none;
+  width: var(--ws-space-16);
+  height: 1lh;
+  content: '';
+  background: var(--ws-color-danger);
+  mask: var(--ws-icon-danger) center / var(--ws-space-16) no-repeat;
 }
 
 .input {
   display: block;
   width: 100%;
   min-width: 0;
-  min-height: var(--control-height);
-  padding: var(--space-2) var(--space-3);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius);
+  height: var(--control-height);
+  padding: 0 var(--ws-space-12);
+  border: var(--ws-border-width-thin) solid var(--ws-color-field-border);
+  border-radius: var(--ws-radius-md);
+  color: var(--ws-color-text);
+  font-family: var(--ws-font-family-sans);
+  font-size: var(--ws-font-size-16);
+  line-height: var(--ws-font-line-height-normal);
+  background: var(--ws-color-bg);
+}
+
+.input:hover {
+  border-color: var(--ws-color-text-secondary);
+}
+
+/*
+ * A number is typed, and stepped with the arrow keys. The browser's own spin buttons have no look
+ * of the system's, so they go.
+ */
+.input[type='number'] {
+  appearance: textfield;
+}
+
+.input::-webkit-inner-spin-button,
+.input::-webkit-outer-spin-button {
+  margin: 0;
+  appearance: none;
 }
 
 .input--multiline {
+  height: auto;
+  min-height: var(--control-height);
+  padding-block: var(--ws-space-8);
   resize: vertical;
 }
 
-/* A native select indents its text a little more than an input does. */
-select.input {
-  padding-inline-start: calc(var(--space-3) - 0.25rem);
+/* A select draws no arrow of its own here: its box draws one, where the field's text would end. */
+.select {
+  position: relative;
 }
 
-.field--invalid .input {
-  border-color: var(--color-error);
-  box-shadow: 0 0 0 1px var(--color-error);
+/* Room on the right for the arrow, with the field's own padding on both sides of it. */
+.select .input {
+  padding-right: calc(3 * var(--ws-space-12));
+  cursor: pointer;
+  appearance: none;
+}
+
+.select::after {
+  position: absolute;
+  top: 50%;
+  right: calc(var(--ws-space-12) + var(--ws-border-width-thin));
+  width: var(--ws-space-12);
+  height: var(--ws-space-12);
+  content: '';
+  background: var(--ws-color-text-secondary);
+  mask: var(--ws-icon-chevron) center / contain no-repeat;
+  translate: 0 -50%;
+  rotate: 90deg;
+  pointer-events: none;
+}
+
+.field--invalid .input,
+.field--invalid .input:hover {
+  border-color: var(--ws-color-danger);
+  box-shadow: inset 0 0 0 var(--ws-border-width-thin) var(--ws-color-danger);
 }
 
 .choices {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  margin-top: var(--space-1);
+  gap: var(--ws-space-10);
+  margin-top: var(--ws-space-4);
 }
 
 .choice {
   display: flex;
   align-items: flex-start;
-  gap: var(--space-2);
-}
-
-.choice__input {
-  flex: none;
-  width: 1.125rem;
-  height: 1.125rem;
-  margin: 0.1875rem 0 0;
-  accent-color: var(--color-accent);
+  gap: var(--ws-space-10);
+  cursor: pointer;
 }
 
 .choice__label {
   min-width: 0;
+  font-family: var(--ws-font-family-sans);
+  font-size: var(--ws-font-size-16);
+  line-height: var(--ws-font-line-height-normal);
 }
 
-/* Groups and lists */
+/* A box or a dot of the system's colors, on the first line of its label. */
+.choice__input {
+  display: grid;
+  flex: none;
+  place-content: center;
+  width: var(--ws-space-20);
+  height: var(--ws-space-20);
+  margin: var(--ws-space-2) 0 0;
+  border: var(--ws-border-width-thin) solid var(--ws-color-field-border);
+  border-radius: var(--ws-radius-xs);
+  cursor: pointer;
+  background: var(--ws-color-bg);
+  appearance: none;
+}
+
+.choice__input[type='radio'] {
+  border-radius: var(--ws-radius-full);
+}
+
+.choice__input::before {
+  width: var(--ws-space-12);
+  height: var(--ws-space-12);
+  content: '';
+  background: var(--ws-color-on-interactive);
+  mask: var(--icon-check) center / contain no-repeat;
+  scale: 0;
+}
+
+.choice__input[type='radio']::before {
+  width: var(--ws-space-8);
+  height: var(--ws-space-8);
+  border-radius: var(--ws-radius-full);
+  mask: none;
+}
+
+.choice__input:hover {
+  border-color: var(--ws-color-text-secondary);
+}
+
+.choice__input:checked {
+  border-color: var(--ws-color-interactive);
+  background: var(--ws-color-interactive);
+}
+
+.choice__input:checked::before {
+  scale: 1;
+}
+
+.field--invalid .choice__input:not(:checked) {
+  border-color: var(--ws-color-danger);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .choice__input::before {
+    transition: scale var(--ws-motion-duration-fast)
+      var(--ws-motion-easing-standard);
+  }
+}
+
+/* A control that can't be used now is faint and says so: the order button while it is sent. */
+.input:disabled,
+.choice__input:disabled,
+.button:disabled {
+  border-color: var(--ws-color-text-faint);
+  color: var(--ws-color-text-faint);
+  cursor: not-allowed;
+  background: none;
+}
+
+.choice:has(:disabled) {
+  color: var(--ws-color-text-faint);
+  cursor: not-allowed;
+}
+
+/* Groups and lists: a box with its name in the top edge. */
 
 .group {
   min-width: 0;
   margin: 0;
-  padding: var(--space-4);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
+  padding: var(--ws-space-16) var(--ws-space-20) var(--ws-space-20);
+  border: var(--ws-border-width-thin) solid var(--ws-color-border);
+  border-radius: var(--ws-radius-lg);
 }
 
+/* The name sits in the edge with room around it, and its text starts where the fields do. */
 .group__label {
-  padding: 0 var(--space-2);
-  font-weight: 600;
+  margin-left: calc(-1 * var(--ws-space-6));
+  padding: 0 var(--ws-space-6);
+  color: var(--ws-color-text-secondary);
+  font: var(--ws-text-overline);
+  letter-spacing: var(--ws-text-overline-letter-spacing);
+  text-transform: uppercase;
 }
 
 .group__hint {
-  margin-bottom: var(--space-4);
-  font-size: 0.875rem;
-  color: var(--color-muted);
+  margin-bottom: var(--ws-space-16);
+  color: var(--ws-color-text-secondary);
+  font: var(--ws-text-body-sm);
+}
+
+@media (width < 64rem) {
+  .group {
+    padding: var(--ws-space-12) var(--ws-space-16) var(--ws-space-16);
+  }
 }
 
 .list__empty {
-  color: var(--color-muted);
+  color: var(--ws-color-text-secondary);
 }
 
 .list__item {
-  padding: var(--space-4);
-  background: var(--color-page);
-  border-radius: var(--radius);
+  padding-top: var(--ws-space-16);
+  border-top: var(--ws-border-width-thin) dashed var(--ws-color-border);
 }
 
 .list__item-header {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
-  gap: var(--space-3);
-  margin-bottom: var(--space-3);
+  gap: var(--ws-space-12);
+  margin-bottom: var(--ws-space-16);
 }
 
 .list__item-title {
-  font-size: 1rem;
+  font: var(--ws-text-h4);
 }
 
 /* Rows: one line of a 12-column grid, stacked on a narrow screen */
@@ -305,96 +595,131 @@ select.input {
 .row {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: var(--space-5) var(--space-4);
+  gap: var(--ws-space-24) var(--ws-space-16);
 }
 
 .row__cell {
-  grid-column: 1 / -1;
+  grid-column: span var(--span, 12);
   min-width: 0;
 }
 
-@media (min-width: 40rem) {
+/* The page's columns stand further apart than fields do. */
+.row--sections {
+  column-gap: var(--ws-space-40);
+}
+
+@media (width < 64rem) {
   .row__cell {
-    grid-column: span var(--span, 12);
+    grid-column: 1 / -1;
+  }
+
+  /*
+   * Stacked, the columns are sections like the others, and are set off from each other the same
+   * way. Their wide gap goes: twelve tracks still have eleven gaps between them, wider than a phone.
+   */
+  .row--sections {
+    gap: var(--ws-space-32) 0;
+  }
+
+  .row--sections > .row__cell + .row__cell {
+    padding-top: var(--ws-space-32);
+    border-top: var(--ws-border-width-thin) solid var(--ws-color-border);
   }
 }
 
 /* Buttons */
 
 .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: var(--control-height);
-  padding: var(--space-2) var(--space-4);
-  font-weight: 600;
+  margin: 0;
+  padding: 0 var(--ws-space-20);
+  border: var(--ws-border-width-thin) solid var(--ws-color-field-border);
+  border-radius: var(--ws-radius-md);
+  color: var(--ws-color-text);
+  font: var(--ws-text-label);
+  font-weight: var(--ws-font-weight-semibold);
   cursor: pointer;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius);
+  background: none;
 }
 
-.button:hover {
-  border-color: var(--color-text);
+.button:enabled:hover {
+  border-color: var(--ws-color-text-secondary);
+  background: var(--ws-color-raised);
 }
 
 .button--primary {
-  color: var(--color-on-accent);
-  background: var(--color-accent);
-  border-color: var(--color-accent);
+  border-color: var(--ws-color-interactive);
+  color: var(--ws-color-on-interactive);
+  background: var(--ws-color-interactive);
 }
 
-.button--primary:hover {
-  background: var(--color-accent-strong);
-  border-color: var(--color-accent-strong);
+/* The system has no hover color for the interactive fill: a touch of the text color lifts it. */
+.button--primary:enabled:hover {
+  --hover: color-mix(
+    in oklab,
+    var(--ws-color-interactive) 85%,
+    var(--ws-color-text)
+  );
+
+  border-color: var(--hover);
+  background: var(--hover);
 }
 
 .button--wide {
   width: 100%;
 }
 
-.button:disabled {
-  cursor: progress;
-  opacity: 0.7;
-}
-
 .button--quiet {
-  min-height: 2rem;
-  padding: var(--space-1) var(--space-2);
-  font-weight: 400;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  color: var(--ws-color-interactive);
+  font-weight: var(--ws-font-weight-regular);
   text-decoration: underline;
-  background: none;
-  border-color: transparent;
 }
 
-/* Summary */
+.button--quiet:enabled:hover {
+  background: none;
+  text-decoration-thickness: var(--ws-border-width-medium);
+}
+
+/* Summary: what the order costs, a line each, its amounts on the right. */
 
 .summary {
-  border-top: 1px solid var(--color-border);
+  border-top: var(--ws-border-width-thin) dashed var(--ws-color-border);
 }
 
-.summary__row--empty {
-  color: var(--color-muted);
-}
-
+/* A term in the voice of a label, its amount in the face of a field, on one baseline. */
 .summary__row {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-3);
-  padding: var(--space-2) 0;
-  border-bottom: 1px solid var(--color-border);
+  gap: var(--ws-space-16);
+  padding-block: var(--ws-space-8);
+  border-bottom: var(--ws-border-width-thin) dashed var(--ws-color-border);
 }
 
 .summary__term {
-  min-width: 0;
+  color: var(--ws-color-text-secondary);
+  font: var(--ws-text-label);
   overflow-wrap: anywhere;
 }
 
 .summary__value {
-  flex: none;
   font-variant-numeric: tabular-nums;
+  text-align: right;
 }
 
-.summary__row--total {
-  font-weight: 600;
+.summary__row--total .summary__term {
+  color: var(--ws-color-text);
+  font-weight: var(--ws-font-weight-semibold);
+}
+
+.summary__row--total .summary__value {
+  font-weight: var(--ws-font-weight-semibold);
 }
 
 /* Notices */
@@ -403,36 +728,126 @@ select.input {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--space-3);
-  padding: var(--space-5);
-  border: 1px solid;
-  border-radius: var(--radius);
-}
-
-.notice--success {
-  background: var(--color-success-surface);
-  border-color: var(--color-success);
-}
-
-.notice--error {
-  background: var(--color-error-surface);
-  border-color: var(--color-error);
+  gap: var(--ws-space-16);
 }
 
 .notice__title {
-  font-size: 1.25rem;
-  line-height: 1.3;
+  display: flex;
+  gap: var(--ws-space-12);
+  font: var(--ws-text-h2);
+  letter-spacing: var(--ws-text-h2-letter-spacing);
 }
 
-.notice__code {
+/*
+ * A notice without a title is its message alone, like the one over the order button: a sentence
+ * in the voice of a field's error, its icon before the first line.
+ */
+.notice__message {
+  display: flex;
+  gap: var(--ws-space-6);
+  font: var(--ws-text-body-sm);
+  font-weight: var(--ws-font-weight-medium);
+}
+
+/* The title says what happened, and the icon of its status goes before its first line. */
+.notice__title::before,
+.notice__message::before {
+  flex: none;
+  width: var(--ws-space-16);
+  height: 1lh;
+  content: '';
+  background: var(--ws-color-tip);
+  mask: var(--icon-check) center / var(--ws-space-16) no-repeat;
+}
+
+.notice--error {
+  padding: var(--ws-space-16) var(--ws-space-20) var(--ws-space-20);
+  border-left: var(--ws-border-width-thick) solid var(--ws-color-danger);
+  border-radius: 0 var(--ws-radius-lg) var(--ws-radius-lg) 0;
+  background: var(--ws-color-danger-tint);
+}
+
+.notice--error .notice__title::before {
+  width: var(--ws-space-20);
+  background: var(--ws-color-danger);
+  mask-image: var(--ws-icon-danger);
+  mask-size: var(--ws-space-20);
+}
+
+/* A message alone has no title's leading above it, so its box is as deep above as below. */
+.notice--error:has(> .notice__message) {
+  padding-bottom: var(--ws-space-16);
+}
+
+.notice--error .notice__message::before {
+  background: var(--ws-color-danger);
+  mask-image: var(--ws-icon-danger);
+}
+
+.notice .ws-code {
   align-self: stretch;
-  max-height: 24rem;
   margin: 0;
-  padding: var(--space-3);
-  overflow: auto;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.875rem;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
+}
+
+/*
+ * The order can hold long text a person typed. Its line wraps inside the block, and the rest of
+ * it starts one level in from the line's own text, so the shape of the JSON still reads.
+ */
+.code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.code__line {
+  display: block;
+  padding-left: calc(var(--hang) * 1ch);
+  text-indent: calc(var(--hang) * -1ch);
+}
+
+@media (width < 64rem) {
+  .notice__title {
+    font: var(--ws-text-h2-compact);
+    letter-spacing: var(--ws-text-h2-compact-letter-spacing);
+  }
+}
+
+/*
+ * In forced colors the browser paints every background in the page's own color, and with it the
+ * marks drawn as a mask on one. Here they take the system's colors: a checked box and the pressed
+ * language as a selection, every other mark in the color of the text it stands with.
+ */
+@media (forced-colors: active) {
+  .choice__input:checked,
+  .language__button[aria-pressed='true'] {
+    border-color: Highlight;
+    color: HighlightText;
+    background: Highlight;
+  }
+
+  /*
+   * The browser puts a plate of the page's color behind text, and the system's text on a
+   * selection is often that same color. The pressed language's colors are the system's already,
+   * so it keeps them as they are, and its name shows on the selection itself. Its focus ring
+   * takes the system's color the browser gives every other one.
+   */
+  .language__button[aria-pressed='true'] {
+    outline-color: Highlight;
+    forced-color-adjust: none;
+  }
+
+  .choice__input:checked::before {
+    background: HighlightText;
+  }
+
+  .select::after {
+    background: FieldText;
+  }
+
+  .field__error::before,
+  .notice__title::before,
+  .notice__message::before,
+  .notice--error .notice__title::before,
+  .notice--error .notice__message::before {
+    background: CanvasText;
+  }
 }

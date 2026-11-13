@@ -13,7 +13,10 @@ interface FieldShellProps {
   children: ReactNode
 }
 
-/** The frame every field shares: its label, hint and error. */
+/**
+ * The frame every field shares: its label, hint and error. No input has a placeholder: the hint,
+ * from the definition's `description`, goes under it.
+ */
 export function FieldShell({
   id,
   label,

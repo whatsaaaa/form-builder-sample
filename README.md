@@ -1,6 +1,6 @@
 # form-builder-sample
 
-Two small apps built with [form-builder](https://whatsaaaa.github.io/form-builder/) `1.0.0-rc.0`, using only what a new user has: the documentation site and the packages on npm. The repository is the release-candidate trial for form-builder 1.0: it shows that real forms can be built from the public material, and records every problem met on the way. The apps take their look from the [Whatsaaaa design system](https://github.com/whatsaaaa/design-system), installed from npm as `@whatsaaaa/design-system` like any other package: the Vue app now, the React app once its own restyle lands.
+Two small apps built with [form-builder](https://whatsaaaa.github.io/form-builder/) `1.0.0-rc.0`, using only what a new user has: the documentation site and the packages on npm. The repository is the release-candidate trial for form-builder 1.0: it shows that real forms can be built from the public material, and records every problem met on the way. The apps take their look from the [Whatsaaaa design system](https://github.com/whatsaaaa/design-system), installed from npm as `@whatsaaaa/design-system` like any other package.
 
 **The record of the trial is [FRICTION-LOG.md](FRICTION-LOG.md).** Start there if you work on form-builder.
 
@@ -11,9 +11,9 @@ Two small apps built with [form-builder](https://whatsaaaa.github.io/form-builde
 | [`vue-event-registration`](vue-event-registration) | A multi-step event registration in Vue   | Steps, rows, a section and a slot, conditional fields and a conditional step, a repeating guest list, form rules, a definition loaded from a JSON file                        |
 | [`react-checkout`](react-checkout)                 | A checkout in React, with a small server | A definition served by the server and validated again there, messages in English and German, a repeating list of items, conditional fields, server errors shown on the fields |
 
-Each app is self-contained: its own `package.json`, lockfile and tooling. Both need pnpm 11. The Vue app needs Node 22.18 or a later 22, or Node 24.12 or later, as the design system does. The React app needs Node 20.19 or later.
+Each app is self-contained: its own `package.json`, lockfile and tooling. Both need pnpm 11, and Node 22.18 or a later 22, or Node 24.12 or later, as the design system does.
 
-Everything visual lives in each app's `src/ui` folder (field, layout and page components) and its one stylesheet, `src/styles.css`, so a restyle swaps those and leaves the forms alone. The Vue app is restyled on the design system: its page is the system's terminal frame, with a tab bar, a status line that switches the theme and the shortcut keys, and a dark and a light theme. The React app still looks plain until its own restyle lands.
+Everything visual lives in each app's `src/ui` folder (field, layout and page components) and its one stylesheet, `src/styles.css`, so a restyle swaps those and leaves the forms alone. Both apps are restyled on the design system: their page is the system's terminal frame, with a tab bar, a status line that switches the theme and the shortcut keys, and a dark and a light theme.
 
 ## Run the Vue app
 

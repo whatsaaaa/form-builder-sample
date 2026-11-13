@@ -10,7 +10,7 @@ import { Button } from './ui/Button'
 import { CodeBlock } from './ui/CodeBlock'
 import { Notice } from './ui/Notice'
 import { PageShell } from './ui/PageShell'
-import { StatusLine } from './ui/StatusLine'
+import { StatusMessage } from './ui/StatusMessage'
 
 type Loading =
   | { status: 'loading' }
@@ -108,7 +108,7 @@ export function App() {
 
 function Status({ messageKey }: { messageKey: string }) {
   const { t } = useLocale()
-  return <StatusLine>{t(messageKey)}</StatusLine>
+  return <StatusMessage>{t(messageKey)}</StatusMessage>
 }
 
 function LoadFailed({ onRetry }: { onRetry: () => void }) {
@@ -137,9 +137,11 @@ function OrderPlaced({
       <p>
         {t('done.total')}: <strong>{money(order.total)}</strong>
       </p>
-      <CodeBlock data-testid="order">
-        {JSON.stringify(order.order, null, 2)}
-      </CodeBlock>
+      <CodeBlock
+        code={JSON.stringify(order.order, null, 2)}
+        file="order.json"
+        data-testid="order"
+      />
       <Button onClick={onAgain}>{t('done.again')}</Button>
     </Notice>
   )

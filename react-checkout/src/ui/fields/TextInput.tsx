@@ -1,6 +1,5 @@
 import type { ValueFieldProps } from '@whatsaaaa/form-builder-react'
 import { useId } from 'react'
-import { useLocale } from '../../locale/context'
 import { FieldShell } from './FieldShell'
 import { describedBy, uiHint } from './hints'
 
@@ -19,7 +18,6 @@ export function TextInput({
   setInput,
 }: ValueFieldProps) {
   const id = useId()
-  const { t } = useLocale()
   return (
     <FieldShell
       id={id}
@@ -34,7 +32,6 @@ export function TextInput({
         className="input"
         type={inputTypes[field.type] ?? 'text'}
         value={String(input ?? '')}
-        placeholder={field.placeholder && t(field.placeholder)}
         required={required}
         min={uiHint(field, 'min')}
         max={uiHint(field, 'max')}
