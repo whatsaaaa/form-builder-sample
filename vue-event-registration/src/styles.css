@@ -124,6 +124,19 @@ body {
 
 /* Status line */
 
+/*
+ * The path is what gives way on a narrow screen, so the switches after it always fit: it shrinks
+ * to its ellipsis, and then out of sight with its padding.
+ */
+.ws-status-line__file {
+  padding-inline: 0;
+  overflow: hidden;
+}
+
+.ws-status-line__file > span {
+  padding-inline: var(--ws-space-14);
+}
+
 .status-line__theme {
   margin: 0;
   border-block: 0;
