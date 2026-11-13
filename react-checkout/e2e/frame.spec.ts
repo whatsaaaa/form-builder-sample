@@ -149,36 +149,113 @@ for (const colorScheme of ['dark', 'light'] as const) {
   })
 }
 
-test.describe('in forced colors', () => {
-  test.use({ forcedColors: 'active' })
+/**
+ * How much ink the label of a button has: the pixels of its text box, less the edge where text
+ * meets its ground, that are not the box's most common color, the ground itself. A label drawn in
+ * the color of what is right behind it has none.
+ */
+async function labelInk(page: Page, name: string) {
+  const text = await page.getByRole('button', { name }).evaluate((button) => {
+    const range = document.createRange()
+    range.selectNodeContents(button)
+    const { x, y, width, height } = range.getBoundingClientRect()
+    return { x: x + 2, y: y + 2, width: width - 4, height: height - 4 }
+  })
+  const shot = await page.screenshot({ clip: text })
+  return page.evaluate(async (png) => {
+    const image = new Image()
+    image.src = `data:image/png;base64,${png}`
+    await image.decode()
+    const canvas = document.createElement('canvas')
+    canvas.width = image.naturalWidth
+    canvas.height = image.naturalHeight
+    const context = canvas.getContext('2d')
+    if (!context) throw new Error('No 2D context to read the shot with')
+    context.drawImage(image, 0, 0)
+    const { data } = context.getImageData(0, 0, canvas.width, canvas.height)
+    // One word to a pixel, so each color counts as one value.
+    const pixels = new Uint32Array(data.buffer)
+    const counts = new Map<number, number>()
+    for (const pixel of pixels) counts.set(pixel, (counts.get(pixel) ?? 0) + 1)
+    return pixels.length - Math.max(...counts.values())
+  }, shot.toString('base64'))
+}
 
-  // The browser paints every background in the page's color, so a fill alone would say nothing.
-  // The pressed language and a ticked box take the system's color for a selection instead.
-  test('tells the pressed language and a ticked box from the others', async ({
-    page,
-  }) => {
-    const fill = (name: string, role: 'button' | 'checkbox') =>
-      page
-        .getByRole(role, { name })
-        .evaluate((element) => getComputedStyle(element).backgroundColor)
+for (const colorScheme of ['light', 'dark'] as const) {
+  test.describe(`in forced colors, on a ${colorScheme} system`, () => {
+    test.use({ forcedColors: 'active', colorScheme })
 
-    // The system's selection color, on an element the browser leaves as it is.
-    const selection = await page.evaluate(() => {
-      const probe = document.createElement('div')
-      probe.style.forcedColorAdjust = 'none'
-      probe.style.background = 'Highlight'
-      document.body.append(probe)
-      const color = getComputedStyle(probe).backgroundColor
-      probe.remove()
-      return color
+    // The browser paints every background in the page's color, so a fill alone would say nothing.
+    // The pressed language and a ticked box take the system's color for a selection instead.
+    test('tells the pressed language and a ticked box from the others', async ({
+      page,
+    }) => {
+      const fill = (name: string, role: 'button' | 'checkbox') =>
+        page
+          .getByRole(role, { name })
+          .evaluate((element) => getComputedStyle(element).backgroundColor)
+
+      // The system's selection color, on an element the browser leaves as it is.
+      const selection = await page.evaluate(() => {
+        const probe = document.createElement('div')
+        probe.style.forcedColorAdjust = 'none'
+        probe.style.background = 'Highlight'
+        document.body.append(probe)
+        const color = getComputedStyle(probe).backgroundColor
+        probe.remove()
+        return color
+      })
+
+      expect(await fill('English', 'button')).toBe(selection)
+      expect(await fill('Deutsch', 'button')).not.toBe(selection)
+
+      const terms = 'I accept the terms of sale'
+      expect(await fill(terms, 'checkbox')).not.toBe(selection)
+      await page.getByRole('checkbox', { name: terms }).check()
+      expect(await fill(terms, 'checkbox')).toBe(selection)
     })
 
-    expect(await fill('English', 'button')).toBe(selection)
-    expect(await fill('Deutsch', 'button')).not.toBe(selection)
+    // The browser puts a plate of the page's color behind text so it can be read. A label in the
+    // color of that plate is not there at all, pressed or not.
+    test('shows the name of each language, pressed or not', async ({
+      page,
+    }) => {
+      for (const pressed of ['English', 'Deutsch']) {
+        await page.getByRole('button', { name: pressed }).click()
+        await expect(
+          page.getByRole('button', { name: pressed }),
+        ).toHaveAttribute('aria-pressed', 'true')
+        for (const name of ['English', 'Deutsch']) {
+          expect(
+            await labelInk(page, name),
+            `${name} with ${pressed} pressed`,
+          ).toBeGreaterThan(0)
+        }
+      }
+    })
 
-    const terms = 'I accept the terms of sale'
-    expect(await fill(terms, 'checkbox')).not.toBe(selection)
-    await page.getByRole('checkbox', { name: terms }).check()
-    expect(await fill(terms, 'checkbox')).toBe(selection)
+    // The browser rings the control in focus in a color of the system's, whatever the theme's.
+    test('rings the pressed language in focus as it rings the other', async ({
+      page,
+    }) => {
+      const english = page.getByRole('button', { name: 'English' })
+      const deutsch = page.getByRole('button', { name: 'Deutsch' })
+      const ring = async (button: typeof english) => {
+        await expect(button).toBeFocused()
+        return button.evaluate((element) => ({
+          shown: element.matches(':focus-visible'),
+          color: getComputedStyle(element).outlineColor,
+        }))
+      }
+
+      await english.focus()
+      await page.keyboard.press('Tab')
+      const other = await ring(deutsch)
+      await page.keyboard.press('Shift+Tab')
+      const pressed = await ring(english)
+
+      expect(other.shown).toBe(true)
+      expect(pressed).toEqual(other)
+    })
   })
-})
+}

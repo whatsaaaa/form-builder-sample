@@ -824,6 +824,17 @@ body {
     background: Highlight;
   }
 
+  /*
+   * The browser puts a plate of the page's color behind text, and the system's text on a
+   * selection is often that same color. The pressed language's colors are the system's already,
+   * so it keeps them as they are, and its name shows on the selection itself. Its focus ring
+   * takes the system's color the browser gives every other one.
+   */
+  .language__button[aria-pressed='true'] {
+    outline-color: Highlight;
+    forced-color-adjust: none;
+  }
+
   .choice__input:checked::before {
     background: HighlightText;
   }
