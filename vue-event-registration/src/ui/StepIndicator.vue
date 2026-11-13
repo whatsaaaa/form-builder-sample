@@ -27,8 +27,12 @@ defineEmits<{ goTo: [index: number] }>()
           :aria-current="index === current ? 'step' : undefined"
           @click="$emit('goTo', index)"
         >
-          <span class="steps__number" aria-hidden="true">{{ index + 1 }}</span>
+          <!-- A step behind the current one passed its checks: it shows a tick for its number. -->
+          <span class="steps__number" aria-hidden="true">{{
+            index < current ? '' : index + 1
+          }}</span>
           <span class="steps__label">{{ label }}</span>
+          <span v-if="index < current" class="visually-hidden">(done)</span>
         </button>
       </li>
     </ol>

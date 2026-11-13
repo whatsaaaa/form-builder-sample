@@ -15,14 +15,25 @@ async function next(page: Page) {
   await page.getByRole('button', { name: 'Next' }).click()
 }
 
-/** Fails when the page scrolls sideways: something is wider than the screen. */
+/**
+ * Fails when something is wider than the screen: the page scrolls sideways, or a part of the
+ * window frame clips it or scrolls it sideways: the window, its main area, its status line, or a
+ * code block on show.
+ */
 async function expectNoSidewaysScroll(page: Page) {
-  const overflow = await page.evaluate(
-    () =>
-      document.documentElement.scrollWidth -
-      document.documentElement.clientWidth,
-  )
-  expect(overflow).toBeLessThanOrEqual(0)
+  const boxes = [
+    page.locator('html'),
+    page.locator('.page'),
+    page.locator('.page__main'),
+    page.locator('.ws-status-line'),
+    ...(await page.locator('.ws-code, .ws-code > pre').all()),
+  ]
+  for (const box of boxes) {
+    const overflow = await box.evaluate(
+      (element) => element.scrollWidth - element.clientWidth,
+    )
+    expect(overflow, `${box} is wider than its box`).toBeLessThanOrEqual(0)
+  }
 }
 
 async function fillAboutYou(
@@ -306,3 +317,90 @@ test('moves with Enter and with the step indicator', async ({ page }) => {
   await expect(currentStep(page)).toHaveText(/Invoice/)
   await expect(page.getByText('Enter the company name')).toBeVisible()
 })
+
+// 320 px is the width the content must reflow to (WCAG 1.4.10), and 390 px a common phone.
+for (const width of [320, 390]) {
+  for (const colorScheme of ['dark', 'light'] as const) {
+    test.describe(`on a ${width} px screen, in the ${colorScheme} theme`, () => {
+      test.use({ viewport: { width, height: 844 }, colorScheme })
+
+      test('fits the screen at every step, with its errors', async ({
+        page,
+      }) => {
+        // The page follows the system's theme, and names it in the status line.
+        const name = colorScheme === 'dark' ? 'rose-pine' : 'rose-pine-dawn'
+        await expect(
+          page.getByRole('button', {
+            name: `Switch theme, now ${name}`,
+            exact: true,
+          }),
+        ).toBeVisible()
+
+        await next(page)
+        await expect(page.getByText('Enter your first name')).toBeVisible()
+        await expectNoSidewaysScroll(page)
+        // The keys switch is a letter wider off than on, and the status line still holds it.
+        const keys = page.getByRole('switch', { name: 'Shortcut keys' })
+        await keys.click()
+        await expect(keys).toHaveText(/keys\s*off/, { useInnerText: true })
+        await expectNoSidewaysScroll(page)
+        await fillAboutYou(page, 'Business')
+        await page
+          .getByRole('textbox', { name: 'Phone' })
+          .fill('+381 61 234 5678')
+        await next(page)
+
+        await next(page)
+        await expect(page.getByText('Pick at least one session')).toBeVisible()
+        await expectNoSidewaysScroll(page)
+        await page
+          .getByRole('checkbox', { name: 'Hands-on forms workshop' })
+          .check()
+        await page.getByLabel('Workshop level').selectOption('Advanced')
+        await page
+          .getByRole('checkbox', { name: 'I have access or dietary needs' })
+          .check()
+        await page
+          .getByLabel('What do you need?')
+          .fill('Pristup bez stepenica, i čaj bez šećera za večeru.')
+        await expectNoSidewaysScroll(page)
+        await next(page)
+
+        await page.getByRole('button', { name: 'Add guest' }).click()
+        await next(page)
+        await expect(page.getByText("Enter the guest's name")).toBeVisible()
+        await expectNoSidewaysScroll(page)
+        await page
+          .getByRole('region', { name: 'Guest 1' })
+          .getByRole('textbox', { name: 'Name' })
+          .fill('Đurđa Živković')
+        await next(page)
+
+        await next(page)
+        await expect(page.getByText('Enter the company name')).toBeVisible()
+        await expectNoSidewaysScroll(page)
+        await page.getByLabel('Company name').fill('Petrović d.o.o.')
+        await page.getByLabel('Street and number').fill('Knez Mihailova 1')
+        await page.getByLabel('City').fill('Belgrade')
+        await page.getByLabel('ZIP code').fill('11000')
+        await page.getByLabel('Country').selectOption('Serbia')
+        await next(page)
+
+        await expect(currentStep(page)).toHaveText(/Confirm/)
+        await page.getByRole('button', { name: 'Register' }).click()
+        await expect(
+          page.getByText('Please accept the code of conduct'),
+        ).toBeVisible()
+        await expectNoSidewaysScroll(page)
+        await page
+          .getByRole('checkbox', { name: 'I accept the code of conduct' })
+          .check()
+        await page.getByRole('button', { name: 'Register' }).click()
+        await expect(
+          page.getByRole('heading', { name: "You're registered" }),
+        ).toBeVisible()
+        await expectNoSidewaysScroll(page)
+      })
+    })
+  }
+}

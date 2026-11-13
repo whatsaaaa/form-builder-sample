@@ -23,7 +23,6 @@ const id = useId()
       class="input input--multiline"
       rows="4"
       :value="String(input ?? '')"
-      :placeholder="field.placeholder"
       :required="required"
       :aria-invalid="errors ? 'true' : undefined"
       :aria-describedby="describedBy(id, field.description, errors)"

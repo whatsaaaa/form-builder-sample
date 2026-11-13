@@ -31,7 +31,6 @@ const inputTypes: Record<string, string> = {
       class="input"
       :type="inputTypes[field.type] ?? 'text'"
       :value="input ?? ''"
-      :placeholder="field.placeholder"
       :required="required"
       :autocomplete="uiHint(field, 'autocomplete')"
       :aria-invalid="errors ? 'true' : undefined"

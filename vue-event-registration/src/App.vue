@@ -52,6 +52,7 @@ function startOver() {
       <p>This is what the form submitted:</p>
       <CodeBlock
         :code="JSON.stringify(registration, null, 2)"
+        file="registration.json"
         data-testid="output"
       />
       <ActionButton @click="startOver">Register someone else</ActionButton>
