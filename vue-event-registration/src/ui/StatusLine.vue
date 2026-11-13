@@ -30,10 +30,12 @@ onUnmounted(() => {
 <template>
   <footer class="ws-status-line" aria-label="Status">
     <span class="ws-status-line__mode">{{ mode }}</span>
-    <span class="ws-status-line__file"
-      ><span>~/vue-event-registration</span></span
-    >
-    <span class="ws-status-line__spacer" />
+    <!-- The room left in the line, which the path shows in whole or not at all. -->
+    <span class="status-line__path">
+      <span class="ws-status-line__file"
+        ><span>~/vue-event-registration</span></span
+      >
+    </span>
     <!-- Each hint is the control it names: the key clicks the button. -->
     <span class="ws-status-line__keys">
       <button

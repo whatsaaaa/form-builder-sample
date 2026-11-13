@@ -12,6 +12,59 @@ function keysSwitch(page: Page) {
   return page.getByRole('switch', { name: 'Shortcut keys' })
 }
 
+/**
+ * Fails when the status line cuts what it holds. It fits in the line, and its path shows whole or
+ * not at all: when it shows, "~…" fits in its text box, and the text has as much room before the
+ * keys switch as after the mode.
+ */
+async function expectStatusLineWhole(page: Page) {
+  const line = await page.locator('.ws-status-line').evaluate((line) => {
+    const find = (selector: string) => {
+      const element = line.querySelector(selector)
+      if (!element) throw new Error(`The status line has no ${selector}`)
+      return element
+    }
+    const path = find('.ws-status-line__file')
+    if (!path.checkVisibility()) {
+      return { overflow: line.scrollWidth - line.clientWidth, path: undefined }
+    }
+    const text = find('.ws-status-line__file > span')
+    const style = getComputedStyle(text)
+    const box = text.getBoundingClientRect()
+    const left = box.left + parseFloat(style.paddingLeft)
+    const right = box.right - parseFloat(style.paddingRight)
+    const probe = document.createElement('span')
+    probe.style.position = 'absolute'
+    probe.style.font = style.font
+    probe.textContent = '~…'
+    document.body.append(probe)
+    const shortest = probe.getBoundingClientRect().width
+    probe.remove()
+    return {
+      overflow: line.scrollWidth - line.clientWidth,
+      path: {
+        text: right - left,
+        shortest,
+        before:
+          left - find('.ws-status-line__mode').getBoundingClientRect().right,
+        after:
+          find('.ws-status-line__switch').getBoundingClientRect().left - right,
+      },
+    }
+  })
+  expect(line.overflow, 'the status line cuts its end').toBeLessThanOrEqual(0)
+  if (line.path) {
+    expect(line.path.text, 'the path shows a cut glyph').toBeGreaterThanOrEqual(
+      line.path.shortest,
+    )
+    expect(
+      line.path.after,
+      'the path runs into the keys switch',
+    ).toBeGreaterThanOrEqual(line.path.before)
+  }
+  return line.path !== undefined
+}
+
 /** The color of the page behind the window: it changes with the theme. */
 function pageColor(page: Page) {
   return page.evaluate(() => getComputedStyle(document.body).backgroundColor)
@@ -114,3 +167,29 @@ test.describe('on a dark system', () => {
     await expect(html).toHaveAttribute('data-theme', 'light')
   })
 })
+
+for (const colorScheme of ['dark', 'light'] as const) {
+  test.describe(`in the ${colorScheme} theme`, () => {
+    test.use({ colorScheme })
+
+    // From the width the content must reflow to (WCAG 1.4.10) up, with each width of the switch.
+    test('keeps the status line whole on a narrow screen', async ({ page }) => {
+      let shown = 0
+      for (const keys of ['on', 'off']) {
+        if (keys === 'off') await keysSwitch(page).click()
+        await expect(keysSwitch(page)).toHaveText(
+          new RegExp(`keys\\s*${keys}`),
+          {
+            useInnerText: true,
+          },
+        )
+        for (let width = 320; width <= 400; width += 2) {
+          await page.setViewportSize({ width, height: 700 })
+          if (await expectStatusLineWhole(page)) shown++
+        }
+      }
+      // The path gives way only when it must.
+      expect(shown).toBeGreaterThan(0)
+    })
+  })
+}

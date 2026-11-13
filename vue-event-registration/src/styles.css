@@ -125,16 +125,21 @@ body {
 /* Status line */
 
 /*
- * The path is what gives way on a narrow screen, so the switches after it always fit: it shrinks
- * to its ellipsis, and then out of sight with its padding.
+ * The path is what gives way on a narrow screen, so the switches after it always fit. Its box
+ * takes the room left in the line, as the spacer would: the path shrinks to its ellipsis in it,
+ * and goes as a whole once "~…" no longer fits inside its padding. The padding is the path's own
+ * --ws-space-14 on each side, as a container query takes no var().
  */
-.ws-status-line__file {
-  padding-inline: 0;
-  overflow: hidden;
+.status-line__path {
+  display: flex;
+  flex: 1;
+  container-type: inline-size;
 }
 
-.ws-status-line__file > span {
-  padding-inline: var(--ws-space-14);
+@container (width < calc(2ch + 2 * 0.875rem)) {
+  .ws-status-line__file {
+    display: none;
+  }
 }
 
 .status-line__theme {
