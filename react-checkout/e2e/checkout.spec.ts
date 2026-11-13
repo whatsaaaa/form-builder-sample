@@ -1,14 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-
-/** Fails when the page scrolls sideways: something is wider than the screen. */
-async function expectNoSidewaysScroll(page: Page) {
-  const overflow = await page.evaluate(
-    () =>
-      document.documentElement.scrollWidth -
-      document.documentElement.clientWidth,
-  )
-  expect(overflow).toBeLessThanOrEqual(0)
-}
+import { expectNoSidewaysScroll } from './checks'
 
 /** Fills in an order that is valid: two mugs, shipped to Belgrade, paid by card. */
 async function fillValidOrder(page: Page) {
@@ -282,3 +273,73 @@ test('the server rejects invalid data sent straight to its API', async ({
     ]),
   )
 })
+
+// 320 px is the width a page has to work at without scrolling sideways (WCAG's reflow), 390 px a
+// common phone.
+for (const [width, colorScheme] of [
+  [320, 'dark'],
+  [320, 'light'],
+  [390, 'dark'],
+  [390, 'light'],
+] as const) {
+  test.describe(`on a ${String(width)} px screen, in the ${colorScheme} theme`, () => {
+    test.use({ viewport: { width, height: 844 }, colorScheme })
+
+    test('fits the screen in English and in German, with its errors', async ({
+      page,
+    }) => {
+      // The page follows the system's theme, and names it in the status line.
+      const name = colorScheme === 'dark' ? 'rose-pine' : 'rose-pine-dawn'
+      await expect(
+        page.getByRole('button', {
+          name: `Switch theme, now ${name}`,
+          exact: true,
+        }),
+      ).toBeVisible()
+      await expectNoSidewaysScroll(page)
+
+      await page.getByRole('button', { name: 'Place order' }).click()
+      await expect(page.getByText('Enter your email')).toBeVisible()
+      await expectNoSidewaysScroll(page)
+      await fillValidOrder(page)
+      await page
+        .getByLabel('Note for the courier')
+        .fill('Zvonite kod Đorđevića, ulaz iz dvorišta. Čuvar je u prizemlju.')
+      await expectNoSidewaysScroll(page)
+
+      // German labels, buttons and messages are longer.
+      await page.getByRole('button', { name: 'Deutsch' }).click()
+      await expect(page.getByRole('heading', { name: 'Kasse' })).toBeVisible()
+      await expectNoSidewaysScroll(page)
+
+      // The server's messages on the fields, as in the test of a changed order above.
+      await page.route('**/api/orders', async (route) => {
+        const body = route.request().postDataJSON() as {
+          input: {
+            lines: { quantity: unknown }[]
+            shipping: { zip: string }
+          }
+        }
+        const line = body.input.lines[0]
+        if (line) line.quantity = 99
+        body.input.shipping.zip = 'ABC'
+        await route.continue({ postData: JSON.stringify(body) })
+      })
+      await page.getByRole('button', { name: 'Bestellung aufgeben' }).click()
+      await expect(
+        page.getByText('Bestellen Sie höchstens zehn Stück eines Produkts'),
+      ).toBeVisible()
+      await expect(
+        page.getByText('Verwenden Sie 4 oder 5 Ziffern'),
+      ).toBeVisible()
+      await expectNoSidewaysScroll(page)
+
+      await page.unroute('**/api/orders')
+      await page.getByRole('button', { name: 'Bestellung aufgeben' }).click()
+      await expect(
+        page.getByRole('heading', { name: 'Vielen Dank für Ihre Bestellung' }),
+      ).toBeVisible()
+      await expectNoSidewaysScroll(page)
+    })
+  })
+}
