@@ -1,3 +1,5 @@
+<img src="./.github/assets/readme-header.svg" alt="form-builder - forms from JSON, validated by Formisch" width="100%" />
+
 # form-builder-sample
 
 Two small apps built with [form-builder](https://whatsaaaa.github.io/form-builder/) `1.0.0-rc.0`, using only what a new user has: the documentation site and the packages on npm. The repository is the release-candidate trial for form-builder 1.0: it shows that real forms can be built from the public material, and records every problem met on the way. The apps take their look from the [Whatsaaaa design system](https://github.com/whatsaaaa/design-system), installed from npm as `@whatsaaaa/design-system` like any other package.
