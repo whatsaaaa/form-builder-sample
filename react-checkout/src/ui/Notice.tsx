@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 
 interface NoticeProps {
   tone: 'success' | 'error'
+  /** What happened. Without one, the notice is its text alone, like a message under a form. */
   title?: string
   children?: ReactNode
 }
@@ -13,8 +14,14 @@ export function Notice({ tone, title, children }: NoticeProps) {
       className={`notice notice--${tone}`}
       role={tone === 'error' ? 'alert' : 'status'}
     >
-      {title && <h2 className="notice__title">{title}</h2>}
-      {children}
+      {title ? (
+        <>
+          <h2 className="notice__title">{title}</h2>
+          {children}
+        </>
+      ) : (
+        <p className="notice__message">{children}</p>
+      )}
     </section>
   )
 }
