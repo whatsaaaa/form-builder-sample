@@ -744,3 +744,41 @@ body {
     letter-spacing: var(--ws-text-h2-compact-letter-spacing);
   }
 }
+
+/*
+ * In forced colors the browser paints every background in the page's own color, and with it the
+ * marks drawn as a mask on one. Here they take the system's colors: a checked box and the current
+ * step as a selection, every other mark in the color of the text it stands with. The current
+ * step's number keeps its colors as they are, as the page's color behind its text would hide it.
+ */
+@media (forced-colors: active) {
+  .choice__input:checked,
+  .steps__item--current .steps__number {
+    border-color: Highlight;
+    color: HighlightText;
+    background: Highlight;
+  }
+
+  .steps__item--current .steps__number {
+    forced-color-adjust: none;
+  }
+
+  .choice__input:checked::before {
+    background: HighlightText;
+  }
+
+  .steps__item--done .steps__number::before {
+    background: ButtonText;
+  }
+
+  .input::-webkit-calendar-picker-indicator,
+  .select::after {
+    background: FieldText;
+  }
+
+  .field__error::before,
+  .notice__title::before,
+  .notice--error .notice__title::before {
+    background: CanvasText;
+  }
+}
