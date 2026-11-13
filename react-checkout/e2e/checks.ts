@@ -10,6 +10,7 @@ export async function expectNoSidewaysScroll(page: Page, message?: string) {
     [
       'html',
       '.ws-term',
+      '.page__main',
       '.ws-tab-bar',
       '.ws-status-line',
       '.ws-code',
@@ -24,23 +25,27 @@ export async function expectNoSidewaysScroll(page: Page, message?: string) {
 }
 
 /**
- * Fails unless every working item of the status line is whole and inside it: the mode, the keys
- * switch and the name of the theme. The path is decoration: it may shrink or go, but when it shows,
- * it is readable, "~…" at the least, and no glyph of it is cut through.
+ * Fails when the status line cuts what it holds. The mode, the keys switch and the name of the
+ * theme are whole and inside it, and its path shows whole or not at all: when it shows, "~…" fits
+ * in its text box, and the text has as much room before the keys switch as after the mode. It is
+ * gone only when "~…" and its padding have no room there. Says whether the path showed.
  */
-export async function expectWholeStatusLine(page: Page, message?: string) {
-  const problems = await page.evaluate(() => {
-    const line = document.querySelector('.ws-status-line')
-    if (!line) return ['no status line']
+export async function expectStatusLineWhole(page: Page, message?: string) {
+  const line = await page.locator('.ws-status-line').evaluate((line) => {
+    const find = (selector: string) => {
+      const element = line.querySelector(selector)
+      if (!element) throw new Error(`The status line has no ${selector}`)
+      return element
+    }
     const edge = line.getBoundingClientRect()
     const items = {
       mode: '.ws-status-line__mode',
       keys: '.ws-status-line__switch',
       theme: '.status-line__theme',
     }
-    const found = Object.entries(items).flatMap(([name, selector]) => {
-      const shown = [...line.querySelectorAll(selector)].filter(
-        (element) => element.getClientRects().length > 0,
+    const cut = Object.entries(items).flatMap(([name, selector]) => {
+      const shown = [...line.querySelectorAll(selector)].filter((element) =>
+        element.checkVisibility(),
       )
       if (shown.length !== 1) return [`${name}: ${String(shown.length)} shown`]
       const element = shown[0] as Element
@@ -51,26 +56,57 @@ export async function expectWholeStatusLine(page: Page, message?: string) {
       const whole = element.scrollWidth <= element.clientWidth
       return inside && whole ? [] : [`${name}: cut`]
     })
-    const path = line.querySelector('.ws-status-line__file > span')
-    if (path && path.getClientRects().length > 0) {
-      // The text's own width, cut or not: the path is in a font of one width for every glyph.
-      const range = document.createRange()
-      range.selectNodeContents(path)
-      const text = range.getBoundingClientRect().width
-      const glyph = text / (path.textContent ?? ' ').length
-      const style = getComputedStyle(path)
-      const room =
-        path.clientWidth -
-        parseFloat(style.paddingLeft) -
-        parseFloat(style.paddingRight)
-      const box = path.getBoundingClientRect()
-      const frame = path.parentElement?.getBoundingClientRect()
-      // All of it, or as much as its ellipsis leaves: one glyph and the ellipsis at the least.
-      const readable = room >= text - 0.5 || room >= 2 * glyph - 0.5
-      const inside = !frame || box.right <= frame.right + 0.5
-      if (!readable || !inside) found.push('path: cut')
+    const path = find('.ws-status-line__file')
+    const text = find('.ws-status-line__file > span')
+    const pathStyle = getComputedStyle(path)
+    const textStyle = getComputedStyle(text)
+    const probe = document.createElement('span')
+    probe.style.position = 'absolute'
+    probe.style.font = textStyle.font
+    probe.textContent = '~…'
+    document.body.append(probe)
+    const shortest = probe.getBoundingClientRect().width
+    probe.remove()
+    const mode = find('.ws-status-line__mode').getBoundingClientRect().right
+    const keys = find('.ws-status-line__switch').getBoundingClientRect().left
+    const box = text.getBoundingClientRect()
+    const left = box.left + parseFloat(textStyle.paddingLeft)
+    const right = box.right - parseFloat(textStyle.paddingRight)
+    return {
+      cut,
+      overflow: line.scrollWidth - line.clientWidth,
+      shown: path.checkVisibility(),
+      room: keys - mode,
+      needed:
+        shortest +
+        parseFloat(pathStyle.paddingLeft) +
+        parseFloat(pathStyle.paddingRight) +
+        parseFloat(textStyle.paddingLeft) +
+        parseFloat(textStyle.paddingRight),
+      text: right - left,
+      shortest,
+      before: left - mode,
+      after: keys - right,
     }
-    return found
   })
-  expect(problems, message).toEqual([])
+  const at = message ? ` ${message}` : ''
+  expect(line.cut, `a working item is cut${at}`).toEqual([])
+  expect(
+    line.overflow,
+    `the status line cuts its end${at}`,
+  ).toBeLessThanOrEqual(0)
+  if (line.shown) {
+    expect(line.text, `the path shows a cut glyph${at}`).toBeGreaterThanOrEqual(
+      line.shortest,
+    )
+    expect(
+      line.after,
+      `the path runs into the keys switch${at}`,
+    ).toBeGreaterThanOrEqual(line.before)
+  } else {
+    expect(line.room, `the path is gone with room for "~…"${at}`).toBeLessThan(
+      line.needed,
+    )
+  }
+  return line.shown
 }

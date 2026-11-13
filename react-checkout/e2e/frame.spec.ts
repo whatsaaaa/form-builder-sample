@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { expectNoSidewaysScroll, expectWholeStatusLine } from './checks'
+import { expectNoSidewaysScroll, expectStatusLineWhole } from './checks'
 
 /** The item of the status line that names the theme on show, and switches it. */
 function themeName(page: Page, name: 'rose-pine' | 'rose-pine-dawn') {
@@ -118,30 +118,58 @@ test.describe('on a dark system', () => {
 })
 
 for (const colorScheme of ['dark', 'light'] as const) {
-  test.describe(`from 320 to 400 px, in the ${colorScheme} theme`, () => {
-    test.use({ viewport: { width: 320, height: 640 }, colorScheme })
+  test.describe(`in the ${colorScheme} theme`, () => {
+    test.use({ colorScheme })
 
-    test('keeps every item of the status line whole, with the keys on and off', async ({
-      page,
-    }) => {
-      // The path gives way to the others: it shrinks, and then goes, at no width cut through.
-      // "keys off" is longer than "keys on".
+    // From the width the content must reflow to (WCAG 1.4.10) up, with each width of the switch.
+    test('keeps the status line whole on a narrow screen', async ({ page }) => {
+      let shown = 0
       for (const keys of ['on', 'off']) {
         if (keys === 'off') await keysSwitch(page).click()
-        await expect(page.locator('html')).toHaveAttribute('data-ws-keys', keys)
+        await expect(keysSwitch(page)).toHaveText(
+          new RegExp(`keys\\s*${keys}`),
+          { useInnerText: true },
+        )
         for (let width = 320; width <= 400; width += 2) {
-          await page.setViewportSize({ width, height: 640 })
+          await page.setViewportSize({ width, height: 700 })
           const at = `at ${String(width)} px with the keys ${keys}`
-          await expectWholeStatusLine(page, at)
+          if (await expectStatusLineWhole(page, at)) shown++
           await expectNoSidewaysScroll(page, at)
         }
       }
+      // The path showed at some width, so the checks of a shown path ran too.
+      expect(shown).toBeGreaterThan(0)
 
       // "INSERT" takes the place of "NORMAL" while a field has focus.
-      await page.setViewportSize({ width: 320, height: 640 })
+      await page.setViewportSize({ width: 320, height: 700 })
       await page.getByRole('textbox', { name: 'Email' }).focus()
       await expect(page.locator('.ws-status-line__mode')).toHaveText('INSERT')
-      await expectWholeStatusLine(page)
+      await expectStatusLineWhole(page, 'at 320 px while typing')
     })
   })
 }
+
+test.describe('in forced colors', () => {
+  test.use({ forcedColors: 'active' })
+
+  // The browser paints every background in the page's color, so a fill alone would say nothing.
+  test('tells the pressed language and a ticked box from the others', async ({
+    page,
+  }) => {
+    const fill = (name: string, role: 'button' | 'checkbox') =>
+      page
+        .getByRole(role, { name })
+        .evaluate((element) => getComputedStyle(element).backgroundColor)
+
+    expect(await fill('English', 'button')).not.toBe(
+      await fill('Deutsch', 'button'),
+    )
+
+    const terms = page.getByRole('checkbox', { name: /terms of sale/ })
+    const unticked = await fill('I accept the terms of sale', 'checkbox')
+    await terms.check()
+    expect(await fill('I accept the terms of sale', 'checkbox')).not.toBe(
+      unticked,
+    )
+  })
+})

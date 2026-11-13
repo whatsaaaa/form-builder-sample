@@ -37,10 +37,12 @@ export function StatusLine() {
   return (
     <footer className="ws-status-line" aria-label="Status">
       <span className="ws-status-line__mode">{mode}</span>
-      <span className="ws-status-line__file">
-        <span>~/react-checkout</span>
+      {/* The room left in the line, which the path shows in whole or not at all. */}
+      <span className="status-line__path">
+        <span className="ws-status-line__file">
+          <span>~/react-checkout</span>
+        </span>
       </span>
-      <span className="ws-status-line__spacer" />
       {/* Each hint is the control it names: the key clicks the button. */}
       <span className="ws-status-line__keys">
         <button

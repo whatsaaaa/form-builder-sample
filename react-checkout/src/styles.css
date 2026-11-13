@@ -123,36 +123,19 @@ body {
 /* Status line */
 
 /*
- * The path is decoration, so it gives way first, down to a 320 px screen. Its box takes the room
- * the working items leave, and its text sits in it at its own width, with the fill and the
- * padding, shrinking behind its ellipsis. Where the box has no room for "~…" and that padding,
- * the text goes, padding and all, so no glyph is ever cut through: a query on the path's own box,
- * not a breakpoint of the page.
+ * The path is what gives way on a narrow screen, so the switches after it always fit. Its box
+ * takes the room left in the line, as the spacer would: the path shrinks to its ellipsis in it,
+ * and goes as a whole once "~…" no longer fits inside its padding. The padding is the path's own
+ * --ws-space-14 on each side, as a container query takes no var().
  */
-.ws-status-line__file {
-  flex: 1 1 0;
+.status-line__path {
+  display: flex;
+  flex: 1;
   container-type: inline-size;
-  padding-inline: 0;
-  background: none;
 }
 
-/* The path's box fills the line, so the spacer has nothing left to push. */
-.ws-status-line__spacer {
-  flex: none;
-}
-
-/* Its text sits on the middle of the line, where the other items center theirs. */
-.ws-status-line__file > span {
-  padding: calc(
-      (var(--ws-size-status-line) - var(--ws-border-width-thin) - 1lh) / 2
-    )
-    var(--ws-space-14);
-  background: var(--ws-color-raised);
-}
-
-/* "~…" between the paddings: 2 × --ws-space-14 is 1.75rem, as a query can't read a custom property. */
-@container (width < calc(2ch + 1.75rem)) {
-  .ws-status-line__file > span {
+@container (width < calc(2ch + 2 * 0.875rem)) {
+  .ws-status-line__file {
     display: none;
   }
 }
@@ -825,5 +808,35 @@ body {
   .notice__title {
     font: var(--ws-text-h2-compact);
     letter-spacing: var(--ws-text-h2-compact-letter-spacing);
+  }
+}
+
+/*
+ * In forced colors the browser paints every background in the page's own color, and with it the
+ * marks drawn as a mask on one. Here they take the system's colors: a checked box and the pressed
+ * language as a selection, every other mark in the color of the text it stands with.
+ */
+@media (forced-colors: active) {
+  .choice__input:checked,
+  .language__button[aria-pressed='true'] {
+    border-color: Highlight;
+    color: HighlightText;
+    background: Highlight;
+  }
+
+  .choice__input:checked::before {
+    background: HighlightText;
+  }
+
+  .select::after {
+    background: FieldText;
+  }
+
+  .field__error::before,
+  .notice__title::before,
+  .notice__message::before,
+  .notice--error .notice__title::before,
+  .notice--error .notice__message::before {
+    background: CanvasText;
   }
 }
