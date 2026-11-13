@@ -645,7 +645,7 @@ body {
   background: none;
 }
 
-.button:hover {
+.button:enabled:hover {
   border-color: var(--ws-color-text-secondary);
   background: var(--ws-color-raised);
 }
@@ -657,7 +657,7 @@ body {
 }
 
 /* The system has no hover color for the interactive fill: a touch of the text color lifts it. */
-.button--primary:hover {
+.button--primary:enabled:hover {
   --hover: color-mix(
     in oklab,
     var(--ws-color-interactive) 85%,
@@ -681,7 +681,7 @@ body {
   text-decoration: underline;
 }
 
-.button--quiet:hover {
+.button--quiet:enabled:hover {
   background: none;
   text-decoration-thickness: var(--ws-border-width-medium);
 }

@@ -10,14 +10,17 @@ import type { highlightJson } from './highlight'
 type Highlight = typeof highlightJson
 
 // Shiki is most of the app's weight and is needed only once an order is placed, so it is a file
-// of its own. It starts loading with the app, and the first render does not wait for it.
+// of its own. It starts loading with the app, and the first render does not wait for it. If the
+// file does not load, the code stays plain text.
 let loaded: Highlight | undefined
-const loading = import('./highlight').then(({ highlightJson }) => {
-  loaded = highlightJson
-  return highlightJson
-})
+const loading = import('./highlight')
+  .then(({ highlightJson }) => {
+    loaded = highlightJson
+    return highlightJson
+  })
+  .catch(() => undefined)
 
-/** Lines of plain text, in the block's own text color, for until Shiki is there. */
+/** Lines of plain text, in the block's own text color, for while Shiki is not there. */
 function plain(code: string): ReturnType<Highlight> {
   return code.split('\n').map((line) => [{ content: line, offset: 0 }])
 }
@@ -39,7 +42,7 @@ export function CodeBlock({ code, file, ...props }: CodeBlockProps) {
     if (highlight) return
     let current = true
     void loading.then((loadedHighlight) => {
-      if (current) setHighlight(() => loadedHighlight)
+      if (current && loadedHighlight) setHighlight(() => loadedHighlight)
     })
     return () => {
       current = false

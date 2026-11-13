@@ -153,6 +153,7 @@ test.describe('in forced colors', () => {
   test.use({ forcedColors: 'active' })
 
   // The browser paints every background in the page's color, so a fill alone would say nothing.
+  // The pressed language and a ticked box take the system's color for a selection instead.
   test('tells the pressed language and a ticked box from the others', async ({
     page,
   }) => {
@@ -161,15 +162,23 @@ test.describe('in forced colors', () => {
         .getByRole(role, { name })
         .evaluate((element) => getComputedStyle(element).backgroundColor)
 
-    expect(await fill('English', 'button')).not.toBe(
-      await fill('Deutsch', 'button'),
-    )
+    // The system's selection color, on an element the browser leaves as it is.
+    const selection = await page.evaluate(() => {
+      const probe = document.createElement('div')
+      probe.style.forcedColorAdjust = 'none'
+      probe.style.background = 'Highlight'
+      document.body.append(probe)
+      const color = getComputedStyle(probe).backgroundColor
+      probe.remove()
+      return color
+    })
 
-    const terms = page.getByRole('checkbox', { name: /terms of sale/ })
-    const unticked = await fill('I accept the terms of sale', 'checkbox')
-    await terms.check()
-    expect(await fill('I accept the terms of sale', 'checkbox')).not.toBe(
-      unticked,
-    )
+    expect(await fill('English', 'button')).toBe(selection)
+    expect(await fill('Deutsch', 'button')).not.toBe(selection)
+
+    const terms = 'I accept the terms of sale'
+    expect(await fill(terms, 'checkbox')).not.toBe(selection)
+    await page.getByRole('checkbox', { name: terms }).check()
+    expect(await fill(terms, 'checkbox')).toBe(selection)
   })
 })
