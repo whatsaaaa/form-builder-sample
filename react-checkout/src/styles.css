@@ -123,38 +123,38 @@ body {
 /* Status line */
 
 /*
- * The path is decoration, so it gives way first, down to a 320 px screen: it shrinks behind its
- * ellipsis, and once not even "~/…" fits, it leaves the line with its fill and its padding, which
- * would not shrink on the box itself. Its text wraps to a second line of the box that is never
- * seen: the empty item before it starts the first line, and the box keeps the status line's
- * height.
+ * The path is decoration, so it gives way first, down to a 320 px screen. Its box takes the room
+ * the working items leave, and its text sits in it at its own width, with the fill and the
+ * padding, shrinking behind its ellipsis. Where the box has no room for "~…" and that padding,
+ * the text goes, padding and all, so no glyph is ever cut through: a query on the path's own box,
+ * not a breakpoint of the page.
  */
 .ws-status-line__file {
-  flex-wrap: wrap;
-  gap: 0;
-  height: calc(var(--ws-size-status-line) - var(--ws-border-width-thin));
+  flex: 1 1 0;
+  container-type: inline-size;
   padding-inline: 0;
-  overflow: hidden;
   background: none;
 }
 
-.ws-status-line__file::before {
-  height: 100%;
-  content: '';
+/* The path's box fills the line, so the spacer has nothing left to push. */
+.ws-status-line__spacer {
+  flex: none;
 }
 
-/*
- * As wide as "~/…" to start with, so that is where it wraps, and as wide as the path when there is
- * room. Its text sits on the middle of the line, where the other items center theirs.
- */
+/* Its text sits on the middle of the line, where the other items center theirs. */
 .ws-status-line__file > span {
-  flex: 1 1 calc(2 * var(--ws-space-14) + 3ch);
-  max-width: max-content;
   padding: calc(
       (var(--ws-size-status-line) - var(--ws-border-width-thin) - 1lh) / 2
     )
     var(--ws-space-14);
   background: var(--ws-color-raised);
+}
+
+/* "~…" between the paddings: 2 × --ws-space-14 is 1.75rem, as a query can't read a custom property. */
+@container (width < calc(2ch + 1.75rem)) {
+  .ws-status-line__file > span {
+    display: none;
+  }
 }
 
 .status-line__theme {

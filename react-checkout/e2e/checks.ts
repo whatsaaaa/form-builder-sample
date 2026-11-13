@@ -5,7 +5,7 @@ import { expect, type Page } from '@playwright/test'
  * side. The window, its bars and its code block hide what is wider than they are, so that would
  * not make the page scroll.
  */
-export async function expectNoSidewaysScroll(page: Page) {
+export async function expectNoSidewaysScroll(page: Page, message?: string) {
   const overflowing = await page.evaluate(() =>
     [
       'html',
@@ -20,14 +20,15 @@ export async function expectNoSidewaysScroll(page: Page) {
       ),
     ),
   )
-  expect(overflowing).toEqual([])
+  expect(overflowing, message).toEqual([])
 }
 
 /**
  * Fails unless every working item of the status line is whole and inside it: the mode, the keys
- * switch and the name of the theme. The path is decoration: it may shrink or go, but not be cut.
+ * switch and the name of the theme. The path is decoration: it may shrink or go, but when it shows,
+ * it is readable, "~…" at the least, and no glyph of it is cut through.
  */
-export async function expectWholeStatusLine(page: Page) {
+export async function expectWholeStatusLine(page: Page, message?: string) {
   const problems = await page.evaluate(() => {
     const line = document.querySelector('.ws-status-line')
     if (!line) return ['no status line']
@@ -50,15 +51,26 @@ export async function expectWholeStatusLine(page: Page) {
       const whole = element.scrollWidth <= element.clientWidth
       return inside && whole ? [] : [`${name}: cut`]
     })
-    const path = line.querySelector('.ws-status-line__file')
-    const text = path?.firstElementChild
-    if (path && text) {
+    const path = line.querySelector('.ws-status-line__file > span')
+    if (path && path.getClientRects().length > 0) {
+      // The text's own width, cut or not: the path is in a font of one width for every glyph.
+      const range = document.createRange()
+      range.selectNodeContents(path)
+      const text = range.getBoundingClientRect().width
+      const glyph = text / (path.textContent ?? ' ').length
+      const style = getComputedStyle(path)
+      const room =
+        path.clientWidth -
+        parseFloat(style.paddingLeft) -
+        parseFloat(style.paddingRight)
       const box = path.getBoundingClientRect()
-      const textBox = text.getBoundingClientRect()
-      const gone = textBox.top >= box.bottom
-      if (!gone && textBox.right > box.right + 0.5) found.push('path: cut')
+      const frame = path.parentElement?.getBoundingClientRect()
+      // All of it, or as much as its ellipsis leaves: one glyph and the ellipsis at the least.
+      const readable = room >= text - 0.5 || room >= 2 * glyph - 0.5
+      const inside = !frame || box.right <= frame.right + 0.5
+      if (!readable || !inside) found.push('path: cut')
     }
     return found
   })
-  expect(problems).toEqual([])
+  expect(problems, message).toEqual([])
 }

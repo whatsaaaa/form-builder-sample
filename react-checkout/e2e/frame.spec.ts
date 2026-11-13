@@ -118,25 +118,30 @@ test.describe('on a dark system', () => {
 })
 
 for (const colorScheme of ['dark', 'light'] as const) {
-  test.describe(`on a 320 px screen, in the ${colorScheme} theme`, () => {
+  test.describe(`from 320 to 400 px, in the ${colorScheme} theme`, () => {
     test.use({ viewport: { width: 320, height: 640 }, colorScheme })
 
     test('keeps every item of the status line whole, with the keys on and off', async ({
       page,
     }) => {
-      const mode = page.locator('.ws-status-line__mode')
-      await expect(keysSwitch(page)).toBeChecked()
-      await expectWholeStatusLine(page)
-      await expectNoSidewaysScroll(page)
+      // The path gives way to the others: it shrinks, and then goes, at no width cut through.
+      // "keys off" is longer than "keys on".
+      for (const keys of ['on', 'off']) {
+        if (keys === 'off') await keysSwitch(page).click()
+        await expect(page.locator('html')).toHaveAttribute('data-ws-keys', keys)
+        for (let width = 320; width <= 400; width += 2) {
+          await page.setViewportSize({ width, height: 640 })
+          const at = `at ${String(width)} px with the keys ${keys}`
+          await expectWholeStatusLine(page, at)
+          await expectNoSidewaysScroll(page, at)
+        }
+      }
 
-      // "keys off" is longer, and "INSERT" takes the place of "NORMAL" while a field has focus.
-      await keysSwitch(page).click()
-      await expect(keysSwitch(page)).not.toBeChecked()
-      await expectWholeStatusLine(page)
+      // "INSERT" takes the place of "NORMAL" while a field has focus.
+      await page.setViewportSize({ width: 320, height: 640 })
       await page.getByRole('textbox', { name: 'Email' }).focus()
-      await expect(mode).toHaveText('INSERT')
+      await expect(page.locator('.ws-status-line__mode')).toHaveText('INSERT')
       await expectWholeStatusLine(page)
-      await expectNoSidewaysScroll(page)
     })
   })
 }
