@@ -15,14 +15,17 @@ async function next(page: Page) {
   await page.getByRole('button', { name: 'Next' }).click()
 }
 
-/** Fails when the page scrolls sideways: something is wider than the screen. */
+/**
+ * Fails when something is wider than the screen: the page scrolls sideways, or the window frame
+ * clips it or scrolls it sideways in its main area.
+ */
 async function expectNoSidewaysScroll(page: Page) {
-  const overflow = await page.evaluate(
-    () =>
-      document.documentElement.scrollWidth -
-      document.documentElement.clientWidth,
-  )
-  expect(overflow).toBeLessThanOrEqual(0)
+  for (const selector of ['html', '.page', '.page__main']) {
+    const overflow = await page
+      .locator(selector)
+      .evaluate((element) => element.scrollWidth - element.clientWidth)
+    expect(overflow, `${selector} is wider than its box`).toBeLessThanOrEqual(0)
+  }
 }
 
 async function fillAboutYou(
