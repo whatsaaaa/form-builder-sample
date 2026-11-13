@@ -15,7 +15,7 @@ function keysSwitch(page: Page) {
 /**
  * Fails when the status line cuts what it holds. It fits in the line, and its path shows whole or
  * not at all: when it shows, "~…" fits in its text box, and the text has as much room before the
- * keys switch as after the mode.
+ * keys switch as after the mode. It is gone only when "~…" and its padding have no room there.
  */
 async function expectStatusLineWhole(page: Page) {
   const line = await page.locator('.ws-status-line').evaluate((line) => {
@@ -25,44 +25,52 @@ async function expectStatusLineWhole(page: Page) {
       return element
     }
     const path = find('.ws-status-line__file')
-    if (!path.checkVisibility()) {
-      return { overflow: line.scrollWidth - line.clientWidth, path: undefined }
-    }
     const text = find('.ws-status-line__file > span')
-    const style = getComputedStyle(text)
-    const box = text.getBoundingClientRect()
-    const left = box.left + parseFloat(style.paddingLeft)
-    const right = box.right - parseFloat(style.paddingRight)
+    const pathStyle = getComputedStyle(path)
+    const textStyle = getComputedStyle(text)
     const probe = document.createElement('span')
     probe.style.position = 'absolute'
-    probe.style.font = style.font
+    probe.style.font = textStyle.font
     probe.textContent = '~…'
     document.body.append(probe)
     const shortest = probe.getBoundingClientRect().width
     probe.remove()
+    const mode = find('.ws-status-line__mode').getBoundingClientRect().right
+    const keys = find('.ws-status-line__switch').getBoundingClientRect().left
+    const box = text.getBoundingClientRect()
+    const left = box.left + parseFloat(textStyle.paddingLeft)
+    const right = box.right - parseFloat(textStyle.paddingRight)
     return {
       overflow: line.scrollWidth - line.clientWidth,
-      path: {
-        text: right - left,
-        shortest,
-        before:
-          left - find('.ws-status-line__mode').getBoundingClientRect().right,
-        after:
-          find('.ws-status-line__switch').getBoundingClientRect().left - right,
-      },
+      shown: path.checkVisibility(),
+      room: keys - mode,
+      needed:
+        shortest +
+        parseFloat(pathStyle.paddingLeft) +
+        parseFloat(pathStyle.paddingRight) +
+        parseFloat(textStyle.paddingLeft) +
+        parseFloat(textStyle.paddingRight),
+      text: right - left,
+      shortest,
+      before: left - mode,
+      after: keys - right,
     }
   })
   expect(line.overflow, 'the status line cuts its end').toBeLessThanOrEqual(0)
-  if (line.path) {
-    expect(line.path.text, 'the path shows a cut glyph').toBeGreaterThanOrEqual(
-      line.path.shortest,
+  if (line.shown) {
+    expect(line.text, 'the path shows a cut glyph').toBeGreaterThanOrEqual(
+      line.shortest,
     )
     expect(
-      line.path.after,
+      line.after,
       'the path runs into the keys switch',
-    ).toBeGreaterThanOrEqual(line.path.before)
+    ).toBeGreaterThanOrEqual(line.before)
+  } else {
+    expect(line.room, 'the path is gone with room for "~…"').toBeLessThan(
+      line.needed,
+    )
   }
-  return line.path !== undefined
+  return line.shown
 }
 
 /** The color of the page behind the window: it changes with the theme. */
@@ -188,7 +196,7 @@ for (const colorScheme of ['dark', 'light'] as const) {
           if (await expectStatusLineWhole(page)) shown++
         }
       }
-      // The path gives way only when it must.
+      // The path showed at some width, so the checks of a shown path ran too.
       expect(shown).toBeGreaterThan(0)
     })
   })
