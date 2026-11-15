@@ -30,11 +30,7 @@ import markOnLight from './assets/mark-on-light.svg'
         >docs</a
       >
       <!-- On a project's page the ghost links to the handle's site. A cut for each theme, too. -->
-      <a
-        class="tab-bar__ghost"
-        href="https://whatsaaaa.github.io/"
-        aria-label="A whatsaaaa project"
-      >
+      <a href="https://whatsaaaa.github.io/" aria-label="A whatsaaaa project">
         <img
           class="ws-theme-dark"
           :src="ghostOnDark"

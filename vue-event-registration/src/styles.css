@@ -79,10 +79,6 @@ body {
   margin-inline: calc(-1 * var(--ws-space-4));
 }
 
-.ws-tab-bar__end .tab-bar__ghost {
-  display: flex;
-}
-
 /* Page header */
 
 .page__header {

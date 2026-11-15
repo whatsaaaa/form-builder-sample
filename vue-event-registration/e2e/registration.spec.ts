@@ -46,6 +46,35 @@ async function fillAboutYou(
   await page.getByRole('radio', { name: new RegExp(`^${ticket}`) }).check()
 }
 
+/** Registers a standard attendee for the keynote, with nothing more than it needs. */
+async function registerStandard(page: Page) {
+  await fillAboutYou(page, 'Standard')
+  await next(page)
+  await page.getByRole('checkbox', { name: 'Opening keynote' }).check()
+  await next(page)
+  await next(page)
+  await page
+    .getByRole('checkbox', { name: 'I accept the code of conduct' })
+    .check()
+  await page.getByRole('button', { name: 'Register' }).click()
+  await expect(
+    page.getByRole('heading', { name: "You're registered" }),
+  ).toBeVisible()
+}
+
+/** The colors the registration on show is drawn in: one for plain text, more once highlighted. */
+function outputColors(page: Page) {
+  return page
+    .getByTestId('output')
+    .evaluate((element) => [
+      ...new Set(
+        [element, ...element.querySelectorAll('span')].map(
+          (span) => getComputedStyle(span).color,
+        ),
+      ),
+    ])
+}
+
 test.beforeEach(async ({ page }) => {
   await page.goto('/')
 })
@@ -172,6 +201,53 @@ test('registers a business attendee with guests, step by step', async ({
     newsletter: false,
   })
   await expectNoSidewaysScroll(page)
+})
+
+test('shows the registration as plain text until its highlighter loads, then in color', async ({
+  page,
+}) => {
+  // The highlighter waits on its way, so the registration shows before it is there.
+  let load: () => void = () => undefined
+  const held = new Promise<void>((resolve) => {
+    load = resolve
+  })
+  await page.route('**/assets/highlight-*.js', async (route) => {
+    await held
+    await route.continue()
+  })
+  await page.reload({ waitUntil: 'domcontentloaded' })
+  await registerStandard(page)
+
+  const output = page.getByTestId('output')
+  expect(JSON.parse((await output.textContent()) ?? '')).toMatchObject({
+    email: 'marko@example.com',
+  })
+  expect(await outputColors(page)).toHaveLength(1)
+
+  load()
+  await expect
+    .poll(async () => (await outputColors(page)).length)
+    .toBeGreaterThan(1)
+  expect(JSON.parse((await output.textContent()) ?? '')).toMatchObject({
+    email: 'marko@example.com',
+  })
+})
+
+test('shows the registration as plain text when its highlighter does not load', async ({
+  page,
+}) => {
+  const errors: Error[] = []
+  page.on('pageerror', (error) => errors.push(error))
+  await page.route('**/assets/highlight-*.js', (route) => route.abort())
+  await page.reload()
+  await registerStandard(page)
+
+  expect(
+    JSON.parse((await page.getByTestId('output').textContent()) ?? ''),
+  ).toMatchObject({ email: 'marko@example.com' })
+  // Every piece of the registration is in the block's own text color.
+  expect(await outputColors(page)).toHaveLength(1)
+  expect(errors).toEqual([])
 })
 
 test('keeps the user on a step until its fields are valid', async ({
