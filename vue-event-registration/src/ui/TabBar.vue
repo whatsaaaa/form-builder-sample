@@ -1,25 +1,23 @@
 <script setup lang="ts">
-import { ghostSvg } from '@whatsaaaa/design-system/ghost'
+import ghostOnDark from './assets/ghost-on-dark.svg'
+import ghostOnLight from './assets/ghost-on-light.svg'
 import markOnDark from './assets/mark-on-dark.svg'
 import markOnLight from './assets/mark-on-light.svg'
-
-// The ghost as a picture, for a link: on a project's page it links to the handle's site.
-const ghost = ghostSvg({ px: 2 })
 </script>
 
 <template>
   <header class="ws-tab-bar">
     <span class="ws-tab-bar__brand">
-      <!-- The kit has a cut of the mark for each theme. The stylesheet shows the page's one. -->
+      <!-- The kit has a cut of the mark for each theme. The styles show the page's one. -->
       <img
-        class="tab-bar__mark tab-bar__mark--dark"
+        class="tab-bar__mark ws-theme-dark"
         :src="markOnDark"
         alt=""
         width="32"
         height="32"
       />
       <img
-        class="tab-bar__mark tab-bar__mark--light"
+        class="tab-bar__mark ws-theme-light"
         :src="markOnLight"
         alt=""
         width="32"
@@ -31,14 +29,27 @@ const ghost = ghostSvg({ px: 2 })
       <a class="ws-arrow" href="https://whatsaaaa.github.io/form-builder/"
         >docs</a
       >
-      <!-- eslint-disable vue/no-v-html -- markup built by the design system's ghost module -->
+      <!-- On a project's page the ghost links to the handle's site. A cut for each theme, too. -->
       <a
         class="tab-bar__ghost"
         href="https://whatsaaaa.github.io/"
         aria-label="A whatsaaaa project"
-        v-html="ghost"
-      />
-      <!-- eslint-enable vue/no-v-html -->
+      >
+        <img
+          class="ws-theme-dark"
+          :src="ghostOnDark"
+          alt=""
+          width="20"
+          height="24"
+        />
+        <img
+          class="ws-theme-light"
+          :src="ghostOnLight"
+          alt=""
+          width="20"
+          height="24"
+        />
+      </a>
     </div>
   </header>
 </template>

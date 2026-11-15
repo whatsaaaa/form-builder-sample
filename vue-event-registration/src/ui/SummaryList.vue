@@ -16,14 +16,10 @@ defineProps<{
       class="summary__section"
     >
       <h3 class="summary__title">{{ section.label }}</h3>
-      <dl class="summary__rows">
-        <div
-          v-for="(row, index) in section.rows"
-          :key="index"
-          class="summary__row"
-        >
-          <dt class="summary__term">{{ row.label }}</dt>
-          <dd class="summary__value">{{ row.value }}</dd>
+      <dl class="ws-pairs">
+        <div v-for="(row, index) in section.rows" :key="index">
+          <dt>{{ row.label }}</dt>
+          <dd>{{ row.value }}</dd>
         </div>
       </dl>
     </section>

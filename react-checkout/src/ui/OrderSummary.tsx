@@ -5,29 +5,29 @@ import { useLocale } from '../locale/context'
 export function OrderSummary({ total }: { total: OrderTotal }) {
   const { t, money } = useLocale()
   return (
-    <dl className="summary" data-testid="summary">
+    <dl className="ws-pairs ws-pairs--amounts" data-testid="summary">
       {total.lines.length === 0 && (
-        <div className="summary__row summary__row--empty">
-          <dt className="summary__term">{t('summary.empty')}</dt>
+        <div>
+          <dt>{t('summary.empty')}</dt>
         </div>
       )}
       {total.lines.map((line, index) => (
-        <div key={index} className="summary__row">
-          <dt className="summary__term">
+        <div key={index}>
+          <dt>
             {line.quantity} x {t(line.label)}
           </dt>
-          <dd className="summary__value">{money(line.amount)}</dd>
+          <dd>{money(line.amount)}</dd>
         </div>
       ))}
       {total.delivery && (
-        <div className="summary__row">
-          <dt className="summary__term">{t('summary.delivery')}</dt>
-          <dd className="summary__value">{money(total.delivery.amount)}</dd>
+        <div>
+          <dt>{t('summary.delivery')}</dt>
+          <dd>{money(total.delivery.amount)}</dd>
         </div>
       )}
-      <div className="summary__row summary__row--total">
-        <dt className="summary__term">{t('summary.total')}</dt>
-        <dd className="summary__value">{money(total.total)}</dd>
+      <div className="ws-pairs__total">
+        <dt>{t('summary.total')}</dt>
+        <dd>{money(total.total)}</dd>
       </div>
     </dl>
   )

@@ -31,7 +31,7 @@ onUnmounted(() => {
   <footer class="ws-status-line" aria-label="Status">
     <span class="ws-status-line__mode">{{ mode }}</span>
     <!-- The room left in the line, which the path shows in whole or not at all. -->
-    <span class="status-line__path">
+    <span class="ws-status-line__path">
       <span class="ws-status-line__file"
         ><span>~/vue-event-registration</span></span
       >
@@ -61,23 +61,13 @@ onUnmounted(() => {
     </button>
     <!--
       The name of the theme, which also switches it: the hints above are hidden on a narrow
-      screen, and this is not. Both names are in the page and the styles show the theme's one.
+      screen, and this is not. Both names are in the button and the styles show the theme's one,
+      so it keeps the focus when the theme changes.
     -->
-    <button
-      type="button"
-      class="status-line__theme ws-status-line__item ws-status-line__item--edge ws-status-line__item--dark"
-      @click="toggleTheme"
-    >
-      <span class="visually-hidden">Switch theme, now</span>
-      rose-pine
-    </button>
-    <button
-      type="button"
-      class="status-line__theme ws-status-line__item ws-status-line__item--edge ws-status-line__item--light"
-      @click="toggleTheme"
-    >
-      <span class="visually-hidden">Switch theme, now</span>
-      rose-pine-dawn
+    <button type="button" class="ws-status-line__theme" @click="toggleTheme">
+      <span class="ws-visually-hidden">Switch theme, now </span>
+      <span class="ws-theme-dark">rose-pine</span>
+      <span class="ws-theme-light">rose-pine-dawn</span>
     </button>
   </footer>
 </template>
