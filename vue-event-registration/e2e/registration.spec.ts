@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test, type Locator, type Page } from '@playwright/test'
 
 /** The label of the current step, from the step indicator. */
 function currentStep(page: Page) {
@@ -34,6 +34,27 @@ async function expectNoSidewaysScroll(page: Page) {
     )
     expect(overflow, `${box} is wider than its box`).toBeLessThanOrEqual(0)
   }
+}
+
+/** The text of each line an element's text is drawn on, from the top. */
+function linesOf(element: Locator) {
+  return element.evaluate((element) => {
+    const lines: { top: number; text: string }[] = []
+    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT)
+    const range = document.createRange()
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+      const text = node.textContent ?? ''
+      for (let index = 0; index < text.length; index++) {
+        range.setStart(node, index)
+        range.setEnd(node, index + 1)
+        const { top } = range.getBoundingClientRect()
+        const line = lines.find((each) => Math.abs(each.top - top) < 1)
+        if (line) line.text += text[index]
+        else lines.push({ top, text: text[index] })
+      }
+    }
+    return lines.map((line) => line.text)
+  })
 }
 
 async function fillAboutYou(
@@ -463,6 +484,18 @@ for (const width of [320, 390]) {
         await next(page)
 
         await expect(currentStep(page)).toHaveText(/Confirm/)
+        // A long email breaks after its "@" when it has to, not in the middle of a word.
+        const email = page
+          .locator('.summary dl > div', {
+            has: page.getByText('Email', { exact: true }),
+          })
+          .locator('dd')
+        const lines = await linesOf(email)
+        expect(lines, 'the email breaks in the middle of a word').toEqual(
+          lines.length === 1
+            ? ['marko@example.com']
+            : ['marko@', 'example.com'],
+        )
         await page.getByRole('button', { name: 'Register' }).click()
         await expect(
           page.getByText('Please accept the code of conduct'),

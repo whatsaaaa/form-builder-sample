@@ -6,6 +6,11 @@ defineProps<{
     rows: readonly { label: string; value: string }[]
   }[]
 }>()
+
+/** A value in pieces that end at an "@" or a "/": a long email or URL breaks there. */
+function piecesOf(value: string) {
+  return value.split(/(?<=[@/])/)
+}
 </script>
 
 <template>
@@ -19,7 +24,11 @@ defineProps<{
       <dl class="ws-pairs">
         <div v-for="(row, index) in section.rows" :key="index">
           <dt>{{ row.label }}</dt>
-          <dd>{{ row.value }}</dd>
+          <dd>
+            <template v-for="(piece, at) in piecesOf(row.value)" :key="at"
+              ><wbr v-if="at > 0" />{{ piece }}</template
+            >
+          </dd>
         </div>
       </dl>
     </section>
