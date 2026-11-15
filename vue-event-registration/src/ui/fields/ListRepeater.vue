@@ -39,7 +39,7 @@ const isFull = computed(() => {
             @click="remove(index)"
           >
             Remove
-            <span class="visually-hidden"
+            <span class="ws-visually-hidden"
               >{{ itemLabel.toLowerCase() }} {{ index + 1 }}</span
             >
           </button>

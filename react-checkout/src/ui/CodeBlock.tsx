@@ -1,4 +1,5 @@
 import {
+  Fragment,
   useEffect,
   useMemo,
   useState,
@@ -59,28 +60,30 @@ export function CodeBlock({ code, file, ...props }: CodeBlockProps) {
       }),
     [code, highlight],
   )
+  // What a person typed can be long, so the block wraps its lines instead of scrolling.
   return (
-    <figure className="ws-code">
+    <figure className="ws-code ws-code--wrap">
       <figcaption>
         <span>{file}</span>
         <span>json</span>
       </figcaption>
       {/* A line break ends each line but the last: the text of the block is the code as given. */}
-      <pre {...props} className="code">
+      <pre {...props}>
         <code>
           {lines.map((line, index) => (
-            <span
-              key={index}
-              className="code__line"
-              style={{ '--hang': line.hang } as CSSProperties}
-            >
-              {line.tokens.map((token, column) => (
-                <span key={column} style={{ color: token.color }}>
-                  {token.content}
-                </span>
-              ))}
+            <Fragment key={index}>
+              <span
+                className="line"
+                style={{ '--ws-code-hang': line.hang } as CSSProperties}
+              >
+                {line.tokens.map((token, column) => (
+                  <span key={column} style={{ color: token.color }}>
+                    {token.content}
+                  </span>
+                ))}
+              </span>
               {index < lines.length - 1 ? '\n' : ''}
-            </span>
+            </Fragment>
           ))}
         </code>
       </pre>

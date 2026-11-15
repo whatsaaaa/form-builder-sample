@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test, type Locator, type Page } from '@playwright/test'
 
 /** The label of the current step, from the step indicator. */
 function currentStep(page: Page) {
@@ -36,6 +36,27 @@ async function expectNoSidewaysScroll(page: Page) {
   }
 }
 
+/** The text of each line an element's text is drawn on, from the top. */
+function linesOf(element: Locator) {
+  return element.evaluate((element) => {
+    const lines: { top: number; text: string }[] = []
+    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT)
+    const range = document.createRange()
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+      const text = node.textContent ?? ''
+      for (let index = 0; index < text.length; index++) {
+        range.setStart(node, index)
+        range.setEnd(node, index + 1)
+        const { top } = range.getBoundingClientRect()
+        const line = lines.find((each) => Math.abs(each.top - top) < 1)
+        if (line) line.text += text[index]
+        else lines.push({ top, text: text[index] })
+      }
+    }
+    return lines.map((line) => line.text)
+  })
+}
+
 async function fillAboutYou(
   page: Page,
   ticket: 'Standard' | 'Student' | 'Business',
@@ -44,6 +65,35 @@ async function fillAboutYou(
   await page.getByRole('textbox', { name: 'Last name' }).fill('Petrović')
   await page.getByRole('textbox', { name: 'Email' }).fill('marko@example.com')
   await page.getByRole('radio', { name: new RegExp(`^${ticket}`) }).check()
+}
+
+/** Registers a standard attendee for the keynote, with nothing more than it needs. */
+async function registerStandard(page: Page) {
+  await fillAboutYou(page, 'Standard')
+  await next(page)
+  await page.getByRole('checkbox', { name: 'Opening keynote' }).check()
+  await next(page)
+  await next(page)
+  await page
+    .getByRole('checkbox', { name: 'I accept the code of conduct' })
+    .check()
+  await page.getByRole('button', { name: 'Register' }).click()
+  await expect(
+    page.getByRole('heading', { name: "You're registered" }),
+  ).toBeVisible()
+}
+
+/** The colors the registration on show is drawn in: one for plain text, more once highlighted. */
+function outputColors(page: Page) {
+  return page
+    .getByTestId('output')
+    .evaluate((element) => [
+      ...new Set(
+        [element, ...element.querySelectorAll('span')].map(
+          (span) => getComputedStyle(span).color,
+        ),
+      ),
+    ])
 }
 
 test.beforeEach(async ({ page }) => {
@@ -172,6 +222,53 @@ test('registers a business attendee with guests, step by step', async ({
     newsletter: false,
   })
   await expectNoSidewaysScroll(page)
+})
+
+test('shows the registration as plain text until its highlighter loads, then in color', async ({
+  page,
+}) => {
+  // The highlighter waits on its way, so the registration shows before it is there.
+  let load: () => void = () => undefined
+  const held = new Promise<void>((resolve) => {
+    load = resolve
+  })
+  await page.route('**/assets/highlight-*.js', async (route) => {
+    await held
+    await route.continue()
+  })
+  await page.reload({ waitUntil: 'domcontentloaded' })
+  await registerStandard(page)
+
+  const output = page.getByTestId('output')
+  expect(JSON.parse((await output.textContent()) ?? '')).toMatchObject({
+    email: 'marko@example.com',
+  })
+  expect(await outputColors(page)).toHaveLength(1)
+
+  load()
+  await expect
+    .poll(async () => (await outputColors(page)).length)
+    .toBeGreaterThan(1)
+  expect(JSON.parse((await output.textContent()) ?? '')).toMatchObject({
+    email: 'marko@example.com',
+  })
+})
+
+test('shows the registration as plain text when its highlighter does not load', async ({
+  page,
+}) => {
+  const errors: Error[] = []
+  page.on('pageerror', (error) => errors.push(error))
+  await page.route('**/assets/highlight-*.js', (route) => route.abort())
+  await page.reload()
+  await registerStandard(page)
+
+  expect(
+    JSON.parse((await page.getByTestId('output').textContent()) ?? ''),
+  ).toMatchObject({ email: 'marko@example.com' })
+  // Every piece of the registration is in the block's own text color.
+  expect(await outputColors(page)).toHaveLength(1)
+  expect(errors).toEqual([])
 })
 
 test('keeps the user on a step until its fields are valid', async ({
@@ -387,6 +484,18 @@ for (const width of [320, 390]) {
         await next(page)
 
         await expect(currentStep(page)).toHaveText(/Confirm/)
+        // A long email breaks after its "@" when it has to, not in the middle of a word.
+        const email = page
+          .locator('.summary dl > div', {
+            has: page.getByText('Email', { exact: true }),
+          })
+          .locator('dd')
+        const lines = await linesOf(email)
+        expect(lines, 'the email breaks in the middle of a word').toEqual(
+          lines.length === 1
+            ? ['marko@example.com']
+            : ['marko@', 'example.com'],
+        )
         await page.getByRole('button', { name: 'Register' }).click()
         await expect(
           page.getByText('Please accept the code of conduct'),

@@ -38,7 +38,7 @@ export function StatusLine() {
     <footer className="ws-status-line" aria-label="Status">
       <span className="ws-status-line__mode">{mode}</span>
       {/* The room left in the line, which the path shows in whole or not at all. */}
-      <span className="status-line__path">
+      <span className="ws-status-line__path">
         <span className="ws-status-line__file">
           <span>~/react-checkout</span>
         </span>
@@ -72,22 +72,18 @@ export function StatusLine() {
       </button>
       {/*
         The name of the theme, which also switches it: the hints above are hidden on a narrow
-        screen, and this is not. Both names are in the page and the styles show the theme's one.
+        screen, and this is not. Both names are in the button and the styles show the theme's
+        one, so it keeps the focus when the theme changes.
       */}
-      <ThemeName theme="dark" name="rose-pine" />
-      <ThemeName theme="light" name="rose-pine-dawn" />
+      <button
+        type="button"
+        className="ws-status-line__theme"
+        onClick={toggleTheme}
+      >
+        <span className="ws-visually-hidden">Switch theme, now </span>
+        <span className="ws-theme-dark">rose-pine</span>
+        <span className="ws-theme-light">rose-pine-dawn</span>
+      </button>
     </footer>
-  )
-}
-
-function ThemeName({ theme, name }: { theme: 'dark' | 'light'; name: string }) {
-  return (
-    <button
-      type="button"
-      className={`status-line__theme ws-status-line__item ws-status-line__item--edge ws-status-line__item--${theme}`}
-      onClick={toggleTheme}
-    >
-      <span className="visually-hidden">Switch theme, now</span> {name}
-    </button>
   )
 }

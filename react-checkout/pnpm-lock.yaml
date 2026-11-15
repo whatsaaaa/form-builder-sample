@@ -18,8 +18,8 @@ importers:
         specifier: ^1.3.0
         version: 1.3.0(valibot@1.5.0(typescript@7.0.2))
       '@whatsaaaa/design-system':
-        specifier: ^0.1.1
-        version: 0.1.1
+        specifier: ^0.6.1
+        version: 0.6.1
       '@whatsaaaa/form-builder-affects':
         specifier: 0.2.2-rc.0
         version: 0.2.2-rc.0(@whatsaaaa/form-builder-schema@1.0.0-rc.0(valibot@1.5.0(typescript@7.0.2)))(valibot@1.5.0(typescript@7.0.2))
@@ -741,13 +741,16 @@ packages:
   '@vitest/spy@5.1.0':
     resolution: {integrity: sha512-2DPO5OMHWKrBngC+fCmTQqemNF0gidRhp3lxbBmRhW+M1XJrfgPpqNqWVevXtn2f2ufD5ZaR1B6B641aAlcX5A==}
 
-  '@whatsaaaa/design-system@0.1.1':
-    resolution: {integrity: sha512-1LWR3jvIYdLxcRUH/FvvCbRxgLfEILU0mP/fMq5S6i3daEYM6jzIt0NtWRHAsvz9bKAhA+UihNenNVZGOyfq4g==}
+  '@whatsaaaa/design-system@0.6.1':
+    resolution: {integrity: sha512-Cnf6DJXhR/lq0hHCtgbwTBEYimvgbnZWh/O0mrsGA0ScUM+YHsTWxu58+dMVugFobvwSgvizT7E3ne7TdFlZvA==}
     engines: {node: ^22.18.0 || >=24.12.0}
     peerDependencies:
+      tailwindcss: ^4.3.5
       vitepress: ^1.6.4
       vue: ^3.5.0
     peerDependenciesMeta:
+      tailwindcss:
+        optional: true
       vitepress:
         optional: true
       vue:
@@ -1675,7 +1678,7 @@ snapshots:
 
   '@vitest/spy@5.1.0': {}
 
-  '@whatsaaaa/design-system@0.1.1':
+  '@whatsaaaa/design-system@0.6.1':
     dependencies:
       '@terrazzo/token-types': 2.10.0
 

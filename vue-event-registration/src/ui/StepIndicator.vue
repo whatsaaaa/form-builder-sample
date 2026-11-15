@@ -32,7 +32,7 @@ defineEmits<{ goTo: [index: number] }>()
             index < current ? '' : index + 1
           }}</span>
           <span class="steps__label">{{ label }}</span>
-          <span v-if="index < current" class="visually-hidden">(done)</span>
+          <span v-if="index < current" class="ws-visually-hidden">(done)</span>
         </button>
       </li>
     </ol>

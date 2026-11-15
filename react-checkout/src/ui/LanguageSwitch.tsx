@@ -9,12 +9,15 @@ export function LanguageSwitch({
 }) {
   const { locale, t } = useLocale()
   return (
-    <div className="language" role="group" aria-label={t('app.language')}>
+    <div
+      className="language ws-segmented"
+      role="group"
+      aria-label={t('app.language')}
+    >
       {locales.map((each) => (
         <button
           key={each}
           type="button"
-          className="language__button"
           lang={each}
           aria-pressed={each === locale}
           onClick={() => {

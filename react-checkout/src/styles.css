@@ -13,28 +13,12 @@
    * form line up with the brand on the left and with the links on the right.
    */
   --page-gutter: var(--ws-space-20);
-  /* The height of a one-line field and of a button. */
-  --control-height: var(--ws-space-40);
-  /* A tick, drawn as a mask like the design system's icons: only its shape counts. It fills its box. */
-  --icon-check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='2 2 12 12' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8.5 6.5 12 13 4.5'/%3E%3C/svg%3E");
 }
 
 @media (width < 64rem) {
   :root {
     --page-gutter: var(--ws-space-16);
   }
-}
-
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-  border: 0;
 }
 
 /* The window: as tall as the screen, as wide as the form. Its content scrolls inside it. */
@@ -84,95 +68,13 @@ body {
 
 /*
  * The mark at 32 px, two screen pixels to a sprite pixel. Its file keeps two empty sprite columns
- * on each side, so it reaches past its box by them: its pixels start where the form does, and
- * they stand off the name by the bar's own gap.
+ * on each side, so, as the design system's guide says, it is pulled out by them: its pixels start
+ * where the form does, and they stand off the name by the bar's own gap.
  */
 .tab-bar__mark {
   width: var(--ws-space-32);
   height: var(--ws-space-32);
   margin-inline: calc(-1 * var(--ws-space-4));
-}
-
-/*
- * The cut of the mark for the page's theme. The same rule as the design system's for the name of
- * the theme in the status line: an image has no token to switch.
- */
-[data-theme='dark'] .tab-bar__mark--light,
-[data-theme='light'] .tab-bar__mark--dark {
-  display: none;
-}
-
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme]) .tab-bar__mark--dark {
-    display: none;
-  }
-}
-
-@media not (prefers-color-scheme: light) {
-  :root:not([data-theme]) .tab-bar__mark--light {
-    display: none;
-  }
-}
-
-/* The ghost keeps its body in the text color, as everywhere. */
-.ws-tab-bar__end .tab-bar__ghost {
-  color: var(--ws-color-text);
-  line-height: 0;
-}
-
-/* Status line */
-
-/*
- * The path is what gives way on a narrow screen, so the switches after it always fit. Its box
- * takes the room left in the line, as the spacer would: the path shrinks to its ellipsis in it,
- * and goes as a whole once "~…" no longer fits inside its padding. The padding is the path's own
- * --ws-space-14 on each side, as a container query takes no var().
- */
-.status-line__path {
-  display: flex;
-  flex: 1;
-  container-type: inline-size;
-}
-
-@container (width < calc(2ch + 2 * 0.875rem)) {
-  .ws-status-line__file {
-    display: none;
-  }
-}
-
-.status-line__theme {
-  margin: 0;
-  border-block: 0;
-  border-right: 0;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-  background: none;
-}
-
-.status-line__theme:hover {
-  color: var(--ws-color-text);
-}
-
-/*
- * The focus ring of a control in the status line goes inside it, as the keys switch's does: the
- * line cuts off what reaches past its edges. A key hint gets room for the ring from the gap
- * around it, so nothing moves.
- */
-.ws-status-line__keys :is(button, a) {
-  margin-inline: calc(-1 * var(--ws-space-6));
-  padding-inline: var(--ws-space-6);
-}
-
-.ws-status-line__keys :is(button, a):focus-visible,
-.status-line__theme:focus-visible {
-  outline-offset: calc(-1 * var(--ws-border-width-medium));
-}
-
-/* The theme's name is the last item, in the window's corner: its ring follows that curve. */
-.status-line__theme:focus-visible {
-  border-radius: var(--ws-radius-sm) var(--ws-radius-sm)
-    calc(var(--ws-radius-xl) - var(--ws-border-width-thin)) var(--ws-radius-sm);
 }
 
 /* Page header: the title and its lead, with the switch between languages beside the title. */
@@ -196,7 +98,6 @@ body {
 }
 
 .language {
-  display: flex;
   grid-row: 1;
   grid-column: 2;
   align-self: center;
@@ -219,53 +120,6 @@ body {
     justify-self: start;
     margin-top: var(--ws-space-16);
   }
-}
-
-/* Language switch: two buttons that share an edge. The pressed one is filled, like a checked radio. */
-
-.language__button {
-  min-height: var(--control-height);
-  margin: 0;
-  padding: 0 var(--ws-space-16);
-  border: var(--ws-border-width-thin) solid var(--ws-color-field-border);
-  color: var(--ws-color-text-secondary);
-  font: var(--ws-text-label);
-  font-weight: var(--ws-font-weight-semibold);
-  cursor: pointer;
-  background: none;
-}
-
-.language__button:first-child {
-  border-radius: var(--ws-radius-md) 0 0 var(--ws-radius-md);
-}
-
-.language__button:last-child {
-  border-radius: 0 var(--ws-radius-md) var(--ws-radius-md) 0;
-}
-
-/* The shared edge is one line: the pressed or hovered button draws it, on top of the other. */
-.language__button + .language__button {
-  margin-left: calc(-1 * var(--ws-border-width-thin));
-}
-
-.language__button:hover {
-  position: relative;
-  border-color: var(--ws-color-text-secondary);
-  color: var(--ws-color-text);
-  background: var(--ws-color-raised);
-}
-
-.language__button[aria-pressed='true'] {
-  position: relative;
-  border-color: var(--ws-color-interactive);
-  color: var(--ws-color-on-interactive);
-  cursor: default;
-  background: var(--ws-color-interactive);
-}
-
-.language__button:focus-visible {
-  position: relative;
-  z-index: 1;
 }
 
 /* The line the page shows while the checkout loads. */
@@ -374,7 +228,7 @@ body {
   display: block;
   width: 100%;
   min-width: 0;
-  height: var(--control-height);
+  height: var(--ws-size-control);
   padding: 0 var(--ws-space-12);
   border: var(--ws-border-width-thin) solid var(--ws-color-field-border);
   border-radius: var(--ws-radius-md);
@@ -389,23 +243,9 @@ body {
   border-color: var(--ws-color-text-secondary);
 }
 
-/*
- * A number is typed, and stepped with the arrow keys. The browser's own spin buttons have no look
- * of the system's, so they go.
- */
-.input[type='number'] {
-  appearance: textfield;
-}
-
-.input::-webkit-inner-spin-button,
-.input::-webkit-outer-spin-button {
-  margin: 0;
-  appearance: none;
-}
-
 .input--multiline {
   height: auto;
-  min-height: var(--control-height);
+  min-height: var(--ws-size-control);
   padding-block: var(--ws-space-8);
   resize: vertical;
 }
@@ -468,8 +308,8 @@ body {
   display: grid;
   flex: none;
   place-content: center;
-  width: var(--ws-space-20);
-  height: var(--ws-space-20);
+  width: var(--ws-size-check);
+  height: var(--ws-size-check);
   margin: var(--ws-space-2) 0 0;
   border: var(--ws-border-width-thin) solid var(--ws-color-field-border);
   border-radius: var(--ws-radius-xs);
@@ -483,11 +323,11 @@ body {
 }
 
 .choice__input::before {
-  width: var(--ws-space-12);
-  height: var(--ws-space-12);
+  width: 1rem;
+  height: 1rem;
   content: '';
   background: var(--ws-color-on-interactive);
-  mask: var(--icon-check) center / contain no-repeat;
+  mask: var(--ws-icon-check) center / contain no-repeat;
   scale: 0;
 }
 
@@ -633,7 +473,7 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: var(--control-height);
+  min-height: var(--ws-size-control);
   margin: 0;
   padding: 0 var(--ws-space-20);
   border: var(--ws-border-width-thin) solid var(--ws-color-field-border);
@@ -656,16 +496,14 @@ body {
   background: var(--ws-color-interactive);
 }
 
-/* The system has no hover color for the interactive fill: a touch of the text color lifts it. */
 .button--primary:enabled:hover {
-  --hover: color-mix(
-    in oklab,
-    var(--ws-color-interactive) 85%,
-    var(--ws-color-text)
-  );
+  border-color: var(--ws-color-interactive-hover);
+  background: var(--ws-color-interactive-hover);
+}
 
-  border-color: var(--hover);
-  background: var(--hover);
+.button--primary:enabled:active {
+  border-color: var(--ws-color-interactive-active);
+  background: var(--ws-color-interactive-active);
 }
 
 .button--wide {
@@ -684,42 +522,6 @@ body {
 .button--quiet:enabled:hover {
   background: none;
   text-decoration-thickness: var(--ws-border-width-medium);
-}
-
-/* Summary: what the order costs, a line each, its amounts on the right. */
-
-.summary {
-  border-top: var(--ws-border-width-thin) dashed var(--ws-color-border);
-}
-
-/* A term in the voice of a label, its amount in the face of a field, on one baseline. */
-.summary__row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: baseline;
-  gap: var(--ws-space-16);
-  padding-block: var(--ws-space-8);
-  border-bottom: var(--ws-border-width-thin) dashed var(--ws-color-border);
-}
-
-.summary__term {
-  color: var(--ws-color-text-secondary);
-  font: var(--ws-text-label);
-  overflow-wrap: anywhere;
-}
-
-.summary__value {
-  font-variant-numeric: tabular-nums;
-  text-align: right;
-}
-
-.summary__row--total .summary__term {
-  color: var(--ws-color-text);
-  font-weight: var(--ws-font-weight-semibold);
-}
-
-.summary__row--total .summary__value {
-  font-weight: var(--ws-font-weight-semibold);
 }
 
 /* Notices */
@@ -757,7 +559,7 @@ body {
   height: 1lh;
   content: '';
   background: var(--ws-color-tip);
-  mask: var(--icon-check) center / var(--ws-space-16) no-repeat;
+  mask: var(--ws-icon-check) center / var(--ws-space-16) no-repeat;
 }
 
 .notice--error {
@@ -789,21 +591,6 @@ body {
   margin: 0;
 }
 
-/*
- * The order can hold long text a person typed. Its line wraps inside the block, and the rest of
- * it starts one level in from the line's own text, so the shape of the JSON still reads.
- */
-.code {
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-
-.code__line {
-  display: block;
-  padding-left: calc(var(--hang) * 1ch);
-  text-indent: calc(var(--hang) * -1ch);
-}
-
 @media (width < 64rem) {
   .notice__title {
     font: var(--ws-text-h2-compact);
@@ -813,26 +600,15 @@ body {
 
 /*
  * In forced colors the browser paints every background in the page's own color, and with it the
- * marks drawn as a mask on one. Here they take the system's colors: a checked box and the pressed
- * language as a selection, every other mark in the color of the text it stands with.
+ * marks drawn as a mask on one. Here they take the system's colors: a checked box as a selection,
+ * every other mark in the color of the text it stands with. The design system does the same for
+ * the pressed language.
  */
 @media (forced-colors: active) {
-  .choice__input:checked,
-  .language__button[aria-pressed='true'] {
+  .choice__input:checked {
     border-color: Highlight;
     color: HighlightText;
     background: Highlight;
-  }
-
-  /*
-   * The browser puts a plate of the page's color behind text, and the system's text on a
-   * selection is often that same color. The pressed language's colors are the system's already,
-   * so it keeps them as they are, and its name shows on the selection itself. Its focus ring
-   * takes the system's color the browser gives every other one.
-   */
-  .language__button[aria-pressed='true'] {
-    outline-color: Highlight;
-    forced-color-adjust: none;
   }
 
   .choice__input:checked::before {

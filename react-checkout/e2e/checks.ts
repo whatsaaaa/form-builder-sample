@@ -41,7 +41,7 @@ export async function expectStatusLineWhole(page: Page, message?: string) {
     const items = {
       mode: '.ws-status-line__mode',
       keys: '.ws-status-line__switch',
-      theme: '.status-line__theme',
+      theme: '.ws-status-line__theme',
     }
     const cut = Object.entries(items).flatMap(([name, selector]) => {
       const shown = [...line.querySelectorAll(selector)].filter((element) =>
