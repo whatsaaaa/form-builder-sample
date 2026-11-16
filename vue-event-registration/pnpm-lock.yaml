@@ -12,8 +12,8 @@ importers:
         specifier: ^1.2.0
         version: 1.2.0(typescript@6.0.3)(valibot@1.5.0(typescript@6.0.3))(vue@3.5.45(typescript@6.0.3))
       '@whatsaaaa/design-system':
-        specifier: ^0.8.0
-        version: 0.8.0(vue@3.5.45(typescript@6.0.3))
+        specifier: ^0.8.1
+        version: 0.8.1(vue@3.5.45(typescript@6.0.3))
       '@whatsaaaa/form-builder-affects':
         specifier: 0.2.2-rc.0
         version: 0.2.2-rc.0(@whatsaaaa/form-builder-schema@1.0.0-rc.0(valibot@1.5.0(typescript@6.0.3)))(valibot@1.5.0(typescript@6.0.3))
@@ -530,8 +530,8 @@ packages:
       vue:
         optional: true
 
-  '@whatsaaaa/design-system@0.8.0':
-    resolution: {integrity: sha512-d2D1z83IraVF0fkYgVgeimad30SS064NChanaLUDnBinZwL20SSS8v0Z8w5sLabEHjzqmwiO6P01qyucmhWgfg==}
+  '@whatsaaaa/design-system@0.8.1':
+    resolution: {integrity: sha512-ZILLcKGA7ZBUvinoLKJoI1z/Z7oDhJMpT3dBEZ1UuQKCcobQF8xdU7crG0wNGbkAnnIA+ll3nIOi1CiMrhRGTA==}
     engines: {node: ^22.18.0 || >=24.12.0}
     peerDependencies:
       tailwindcss: ^4.3.5
@@ -1760,7 +1760,7 @@ snapshots:
       typescript: 6.0.3
       vue: 3.5.45(typescript@6.0.3)
 
-  '@whatsaaaa/design-system@0.8.0(vue@3.5.45(typescript@6.0.3))':
+  '@whatsaaaa/design-system@0.8.1(vue@3.5.45(typescript@6.0.3))':
     dependencies:
       '@terrazzo/token-types': 2.10.0
     optionalDependencies:
