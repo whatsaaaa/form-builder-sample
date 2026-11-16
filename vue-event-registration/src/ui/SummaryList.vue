@@ -14,12 +14,9 @@ function piecesOf(value: string) {
 </script>
 
 <template>
-  <div class="summary">
-    <section
-      v-for="section in sections"
-      :key="section.id"
-      class="summary__section"
-    >
+  <!-- One group, so the values of every section start at one edge. -->
+  <div class="summary ws-pairs-group">
+    <template v-for="section in sections" :key="section.id">
       <h3 class="summary__title">{{ section.label }}</h3>
       <dl class="ws-pairs">
         <div v-for="(row, index) in section.rows" :key="index">
@@ -31,6 +28,6 @@ function piecesOf(value: string) {
           </dd>
         </div>
       </dl>
-    </section>
+    </template>
   </div>
 </template>
