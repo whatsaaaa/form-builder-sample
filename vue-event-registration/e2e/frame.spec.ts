@@ -14,8 +14,9 @@ function keysSwitch(page: Page) {
 
 /**
  * Fails when the status line cuts what it holds. It fits in the line, and its path shows whole or
- * not at all: when it shows, "~…" fits in its text box, and the text has as much room before the
- * keys switch as after the mode. It is gone only when "~…" and its padding have no room there.
+ * not at all: when it shows, five characters and an ellipsis fit in its text box, and the text has
+ * as much room before the keys switch as after the mode. It is gone only when those and its
+ * padding have no room there.
  */
 async function expectStatusLineWhole(page: Page) {
   const line = await page.locator('.ws-status-line').evaluate((line) => {
@@ -31,7 +32,7 @@ async function expectStatusLineWhole(page: Page) {
     const probe = document.createElement('span')
     probe.style.position = 'absolute'
     probe.style.font = textStyle.font
-    probe.textContent = '~…'
+    probe.textContent = 'xxxxx…'
     document.body.append(probe)
     const shortest = probe.getBoundingClientRect().width
     probe.remove()
@@ -58,17 +59,19 @@ async function expectStatusLineWhole(page: Page) {
   })
   expect(line.overflow, 'the status line cuts its end').toBeLessThanOrEqual(0)
   if (line.shown) {
-    expect(line.text, 'the path shows a cut glyph').toBeGreaterThanOrEqual(
-      line.shortest,
-    )
+    expect(
+      line.text,
+      'the path shows less than five characters',
+    ).toBeGreaterThanOrEqual(line.shortest)
     expect(
       line.after,
       'the path runs into the keys switch',
     ).toBeGreaterThanOrEqual(line.before)
   } else {
-    expect(line.room, 'the path is gone with room for "~…"').toBeLessThan(
-      line.needed,
-    )
+    expect(
+      line.room,
+      'the path is gone with room for five characters',
+    ).toBeLessThan(line.needed)
   }
   return line.shown
 }

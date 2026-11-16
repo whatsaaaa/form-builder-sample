@@ -26,9 +26,10 @@ export async function expectNoSidewaysScroll(page: Page, message?: string) {
 
 /**
  * Fails when the status line cuts what it holds. The mode, the keys switch and the name of the
- * theme are whole and inside it, and its path shows whole or not at all: when it shows, "~…" fits
- * in its text box, and the text has as much room before the keys switch as after the mode. It is
- * gone only when "~…" and its padding have no room there. Says whether the path showed.
+ * theme are whole and inside it, and its path shows whole or not at all: when it shows, five
+ * characters and an ellipsis fit in its text box, and the text has as much room before the keys
+ * switch as after the mode. It is gone only when those and its padding have no room there. Says
+ * whether the path showed.
  */
 export async function expectStatusLineWhole(page: Page, message?: string) {
   const line = await page.locator('.ws-status-line').evaluate((line) => {
@@ -63,7 +64,7 @@ export async function expectStatusLineWhole(page: Page, message?: string) {
     const probe = document.createElement('span')
     probe.style.position = 'absolute'
     probe.style.font = textStyle.font
-    probe.textContent = '~…'
+    probe.textContent = 'xxxxx…'
     document.body.append(probe)
     const shortest = probe.getBoundingClientRect().width
     probe.remove()
@@ -96,17 +97,19 @@ export async function expectStatusLineWhole(page: Page, message?: string) {
     `the status line cuts its end${at}`,
   ).toBeLessThanOrEqual(0)
   if (line.shown) {
-    expect(line.text, `the path shows a cut glyph${at}`).toBeGreaterThanOrEqual(
-      line.shortest,
-    )
+    expect(
+      line.text,
+      `the path shows less than five characters${at}`,
+    ).toBeGreaterThanOrEqual(line.shortest)
     expect(
       line.after,
       `the path runs into the keys switch${at}`,
     ).toBeGreaterThanOrEqual(line.before)
   } else {
-    expect(line.room, `the path is gone with room for "~…"${at}`).toBeLessThan(
-      line.needed,
-    )
+    expect(
+      line.room,
+      `the path is gone with room for five characters${at}`,
+    ).toBeLessThan(line.needed)
   }
   return line.shown
 }
