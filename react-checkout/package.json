@@ -2,6 +2,7 @@
   "name": "react-checkout",
   "private": true,
   "version": "0.0.0",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "concurrently --names api,web \"tsx watch server/index.ts\" \"vite\"",
