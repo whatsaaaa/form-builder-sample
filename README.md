@@ -69,3 +69,7 @@ react-checkout/
   src/ui/             field, layout and page components
   e2e/                end-to-end tests
 ```
+
+## License
+
+[MIT](./LICENSE).
