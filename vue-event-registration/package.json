@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@formisch/vue": "^1.2.0",
-    "@whatsaaaa/design-system": "^0.6.1",
+    "@whatsaaaa/design-system": "^0.8.0",
     "@whatsaaaa/form-builder-affects": "0.2.2-rc.0",
     "@whatsaaaa/form-builder-schema": "1.0.0-rc.0",
     "@whatsaaaa/form-builder-vue": "1.0.0-rc.0",

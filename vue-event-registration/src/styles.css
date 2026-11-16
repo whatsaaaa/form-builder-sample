@@ -7,23 +7,11 @@
 
 @import '@whatsaaaa/design-system/index.css';
 
-:root {
-  /*
-   * The space between the window's edge and what is in it: the tab bar's own, so the edges of the
-   * form line up with the brand on the left and with the links on the right.
-   */
-  --page-gutter: var(--ws-space-20);
-  /* A calendar for the date picker's button, drawn as a mask like the design system's icons. */
-  --icon-calendar: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='1.5 1.25 13 13' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2.5' y='3.5' width='11' height='10' rx='1.5'/%3E%3Cpath d='M2.5 6.5h11M5.5 2v3M10.5 2v3'/%3E%3C/svg%3E");
-}
-
-@media (width < 64rem) {
-  :root {
-    --page-gutter: var(--ws-space-16);
-  }
-}
-
-/* The window: as tall as the screen, as wide as the form. Its content scrolls inside it. */
+/*
+ * The window: as tall as the screen, as wide as the form. Its content scrolls inside it. The form
+ * stands off the window's edge by the tab bar's own padding, so its edges line up with the brand
+ * on the left and with the links on the right.
+ */
 
 body {
   padding: var(--ws-space-20);
@@ -31,7 +19,7 @@ body {
 
 .page {
   max-width: calc(
-    var(--ws-size-content) + 2 * var(--page-gutter) + 2 *
+    var(--ws-size-content) + 2 * var(--ws-space-20) + 2 *
       var(--ws-border-width-thin)
   );
   height: calc(100dvh - 2 * var(--ws-space-20));
@@ -43,7 +31,7 @@ body {
 }
 
 .page__content {
-  padding: var(--ws-space-40) var(--page-gutter) var(--ws-space-48);
+  padding: var(--ws-space-40) var(--ws-space-20) var(--ws-space-48);
 }
 
 /* On a narrow screen the window grows with the form, and the page scrolls. */
@@ -53,6 +41,10 @@ body {
   }
 
   .page {
+    max-width: calc(
+      var(--ws-size-content) + 2 * var(--ws-space-16) + 2 *
+        var(--ws-border-width-thin)
+    );
     height: auto;
     min-height: calc(100dvh - 2 * var(--ws-space-12));
   }
@@ -61,8 +53,9 @@ body {
     overflow: visible;
   }
 
+  /* The gutter of a phone, where the tab bar starts its brand. */
   .page__content {
-    padding-block: var(--ws-space-24) var(--ws-space-40);
+    padding: var(--ws-space-24) var(--ws-space-16) var(--ws-space-40);
   }
 }
 
@@ -185,8 +178,8 @@ body {
 }
 
 .steps__item--done .steps__number::before {
-  width: 1rem;
-  height: 1rem;
+  width: var(--ws-size-icon);
+  height: var(--ws-size-icon);
   content: '';
   background: currentColor;
   mask: var(--ws-icon-check) center / contain no-repeat;
@@ -242,11 +235,11 @@ body {
 
 .field__error::before {
   flex: none;
-  width: var(--ws-space-16);
+  width: var(--ws-size-icon);
   height: 1lh;
   content: '';
   background: var(--ws-color-danger);
-  mask: var(--ws-icon-danger) center / var(--ws-space-16) no-repeat;
+  mask: var(--ws-icon-danger) center / var(--ws-size-icon) no-repeat;
 }
 
 .input {
@@ -270,13 +263,13 @@ body {
 
 /* The date picker's button, drawn like the select's arrow: in the system's color, on the field's padding. */
 .input::-webkit-calendar-picker-indicator {
-  width: var(--ws-space-16);
-  height: var(--ws-space-16);
+  width: var(--ws-size-icon);
+  height: var(--ws-size-icon);
   margin: 0;
   padding: 0;
   cursor: pointer;
   background: var(--ws-color-text-secondary);
-  mask: var(--icon-calendar) center / contain no-repeat;
+  mask: var(--ws-icon-calendar) center / contain no-repeat;
 }
 
 .input--multiline {
@@ -359,8 +352,8 @@ body {
 }
 
 .choice__input::before {
-  width: 1rem;
-  height: 1rem;
+  width: var(--ws-size-icon);
+  height: var(--ws-size-icon);
   content: '';
   background: var(--ws-color-on-interactive);
   mask: var(--ws-icon-check) center / contain no-repeat;
@@ -479,7 +472,7 @@ body {
   min-width: 0;
 }
 
-@media (width < 64rem) {
+@media (width < 40rem) {
   .row__cell {
     grid-column: 1 / -1;
   }
@@ -553,13 +546,7 @@ body {
   text-decoration-thickness: var(--ws-border-width-medium);
 }
 
-/* Summary */
-
-.summary {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ws-space-24);
-}
+/* Summary: a ws-pairs-group, so its sections share one term column. */
 
 .summary__title {
   margin-bottom: var(--ws-space-8);
@@ -567,6 +554,11 @@ body {
   font: var(--ws-text-overline);
   letter-spacing: var(--ws-text-overline-letter-spacing);
   text-transform: uppercase;
+}
+
+/* The group has no gap of its own: a section stands off the one before it by its title's margin. */
+.summary > .ws-pairs + .summary__title {
+  margin-top: var(--ws-space-24);
 }
 
 /* Notices */
@@ -588,11 +580,11 @@ body {
 /* The title says what happened, and the icon of its status goes before its first line. */
 .notice__title::before {
   flex: none;
-  width: var(--ws-space-16);
+  width: var(--ws-size-icon);
   height: 1lh;
   content: '';
   background: var(--ws-color-tip);
-  mask: var(--ws-icon-check) center / var(--ws-space-16) no-repeat;
+  mask: var(--ws-icon-check) center / var(--ws-size-icon) no-repeat;
 }
 
 .notice--error {
