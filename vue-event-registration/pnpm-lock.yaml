@@ -12,8 +12,8 @@ importers:
         specifier: ^1.2.0
         version: 1.2.0(typescript@6.0.3)(valibot@1.5.0(typescript@6.0.3))(vue@3.5.45(typescript@6.0.3))
       '@whatsaaaa/design-system':
-        specifier: ^0.8.1
-        version: 0.8.1(vue@3.5.45(typescript@6.0.3))
+        specifier: ^1.0.0
+        version: 1.0.0(@playwright/test@1.65.0)(vue@3.5.45(typescript@6.0.3))
       '@whatsaaaa/form-builder-affects':
         specifier: 0.2.2-rc.0
         version: 0.2.2-rc.0(@whatsaaaa/form-builder-schema@1.0.0-rc.0(valibot@1.5.0(typescript@6.0.3)))(valibot@1.5.0(typescript@6.0.3))
@@ -530,14 +530,26 @@ packages:
       vue:
         optional: true
 
-  '@whatsaaaa/design-system@0.8.1':
-    resolution: {integrity: sha512-ZILLcKGA7ZBUvinoLKJoI1z/Z7oDhJMpT3dBEZ1UuQKCcobQF8xdU7crG0wNGbkAnnIA+ll3nIOi1CiMrhRGTA==}
+  '@whatsaaaa/design-system@1.0.0':
+    resolution: {integrity: sha512-3NwIewKoSopiLPlLvAXRJcor0IOHXjsOUGcBbbftDkyZGuRu1yZZSohwDQxuWdUQhFZF/iLYo3eZSa3EWrMWVw==}
     engines: {node: ^22.18.0 || >=24.12.0}
     peerDependencies:
+      '@playwright/test': ^1.50.0
+      stylelint: ^18.0.0
+      stylelint-config-standard: ^41.0.0
+      stylelint-value-no-unknown-custom-properties: ^6.1.1
       tailwindcss: ^4.3.5
       vitepress: ^1.6.4
       vue: ^3.5.0
     peerDependenciesMeta:
+      '@playwright/test':
+        optional: true
+      stylelint:
+        optional: true
+      stylelint-config-standard:
+        optional: true
+      stylelint-value-no-unknown-custom-properties:
+        optional: true
       tailwindcss:
         optional: true
       vitepress:
@@ -1760,10 +1772,11 @@ snapshots:
       typescript: 6.0.3
       vue: 3.5.45(typescript@6.0.3)
 
-  '@whatsaaaa/design-system@0.8.1(vue@3.5.45(typescript@6.0.3))':
+  '@whatsaaaa/design-system@1.0.0(@playwright/test@1.65.0)(vue@3.5.45(typescript@6.0.3))':
     dependencies:
       '@terrazzo/token-types': 2.10.0
     optionalDependencies:
+      '@playwright/test': 1.65.0
       vue: 3.5.45(typescript@6.0.3)
 
   '@whatsaaaa/form-builder-affects@0.2.2-rc.0(@whatsaaaa/form-builder-schema@1.0.0-rc.0(valibot@1.5.0(typescript@6.0.3)))(valibot@1.5.0(typescript@6.0.3))':
