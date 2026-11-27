@@ -18,8 +18,8 @@
     "@formisch/vue": "^1.2.0",
     "@whatsaaaa/design-system": "^1.0.0",
     "@whatsaaaa/form-builder-affects": "0.2.2-rc.0",
-    "@whatsaaaa/form-builder-schema": "1.0.0-rc.0",
-    "@whatsaaaa/form-builder-vue": "1.0.0-rc.0",
+    "@whatsaaaa/form-builder-schema": "1.0.0-rc.3",
+    "@whatsaaaa/form-builder-vue": "1.0.0-rc.3",
     "shiki": "^4.6.0",
     "valibot": "^1.5.0",
     "vue": "^3.5.44"

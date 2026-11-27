@@ -13,16 +13,16 @@ importers:
         version: 1.2.0(typescript@6.0.3)(valibot@1.5.0(typescript@6.0.3))(vue@3.5.45(typescript@6.0.3))
       '@whatsaaaa/design-system':
         specifier: ^1.0.0
-        version: 1.0.0(@playwright/test@1.65.0)(vue@3.5.45(typescript@6.0.3))
+        version: 1.1.0(@playwright/test@1.65.0)(vue@3.5.45(typescript@6.0.3))
       '@whatsaaaa/form-builder-affects':
         specifier: 0.2.2-rc.0
-        version: 0.2.2-rc.0(@whatsaaaa/form-builder-schema@1.0.0-rc.0(valibot@1.5.0(typescript@6.0.3)))(valibot@1.5.0(typescript@6.0.3))
+        version: 0.2.2-rc.0(@whatsaaaa/form-builder-schema@1.0.0-rc.3(valibot@1.5.0(typescript@6.0.3)))(valibot@1.5.0(typescript@6.0.3))
       '@whatsaaaa/form-builder-schema':
-        specifier: 1.0.0-rc.0
-        version: 1.0.0-rc.0(valibot@1.5.0(typescript@6.0.3))
+        specifier: 1.0.0-rc.3
+        version: 1.0.0-rc.3(valibot@1.5.0(typescript@6.0.3))
       '@whatsaaaa/form-builder-vue':
-        specifier: 1.0.0-rc.0
-        version: 1.0.0-rc.0(@formisch/vue@1.2.0(typescript@6.0.3)(valibot@1.5.0(typescript@6.0.3))(vue@3.5.45(typescript@6.0.3)))(@whatsaaaa/form-builder-schema@1.0.0-rc.0(valibot@1.5.0(typescript@6.0.3)))(valibot@1.5.0(typescript@6.0.3))(vue@3.5.45(typescript@6.0.3))
+        specifier: 1.0.0-rc.3
+        version: 1.0.0-rc.3(@formisch/vue@1.2.0(typescript@6.0.3)(valibot@1.5.0(typescript@6.0.3))(vue@3.5.45(typescript@6.0.3)))(@whatsaaaa/form-builder-schema@1.0.0-rc.3(valibot@1.5.0(typescript@6.0.3)))(valibot@1.5.0(typescript@6.0.3))(vue@3.5.45(typescript@6.0.3))
       shiki:
         specifier: ^4.6.0
         version: 4.6.0
@@ -530,8 +530,8 @@ packages:
       vue:
         optional: true
 
-  '@whatsaaaa/design-system@1.0.0':
-    resolution: {integrity: sha512-3NwIewKoSopiLPlLvAXRJcor0IOHXjsOUGcBbbftDkyZGuRu1yZZSohwDQxuWdUQhFZF/iLYo3eZSa3EWrMWVw==}
+  '@whatsaaaa/design-system@1.1.0':
+    resolution: {integrity: sha512-IzOsvWMYvITzVNkc0W+/E2HnnTPdLkX0PQ9xqSrpACnJWs+cCd65K4f8jsrwL+WZKvZsy9mhctdopRkHtZI/Ag==}
     engines: {node: ^22.18.0 || >=24.12.0}
     peerDependencies:
       '@playwright/test': ^1.50.0
@@ -563,8 +563,8 @@ packages:
       '@whatsaaaa/form-builder-schema': ^1.0.0-rc.0
       valibot: ^1.3.0
 
-  '@whatsaaaa/form-builder-schema@1.0.0-rc.0':
-    resolution: {integrity: sha512-Dvge/IBAMlTuudQlaVQzY4ZVOTgwiOZUYG8e2aYfqub1BVL1/VRcPQeWmuBQp8OG5cK+yRvrC5dXFMZOi7M/+w==}
+  '@whatsaaaa/form-builder-schema@1.0.0-rc.3':
+    resolution: {integrity: sha512-7Uk8RcIhQIpOVrlAVhjhTQhEdJZ10t5mVyOvxWxbNMrO3rDaFIXzmNQ0D1NqsDAIvmTk/HxIatNxrVC3ZkmiJw==}
     peerDependencies:
       '@valibot/to-json-schema': ^1.6.0
       valibot: ^1.3.0
@@ -572,11 +572,11 @@ packages:
       '@valibot/to-json-schema':
         optional: true
 
-  '@whatsaaaa/form-builder-vue@1.0.0-rc.0':
-    resolution: {integrity: sha512-Tp1Q/lstmyRJR2L5uuHKzlXgABGarb2I+o3jIiPLujYMoC+jsWeMn8WGUWciVsy3Go9M9AztYYPdxW5S4INTdA==}
+  '@whatsaaaa/form-builder-vue@1.0.0-rc.3':
+    resolution: {integrity: sha512-32BLMhE5Uh+G2iISuPToeITjC33qlyT+dkMjQeq1hjpbdhSGyrNkxKtA3c6ZLCCowx8kn8aTr22BjlO0OMCZqg==}
     peerDependencies:
       '@formisch/vue': ^1.1.1
-      '@whatsaaaa/form-builder-schema': ^1.0.0-rc.0
+      '@whatsaaaa/form-builder-schema': ^1.0.0-rc.2
       valibot: ^1.4.1
       vue: ^3.5.2
 
@@ -1772,26 +1772,26 @@ snapshots:
       typescript: 6.0.3
       vue: 3.5.45(typescript@6.0.3)
 
-  '@whatsaaaa/design-system@1.0.0(@playwright/test@1.65.0)(vue@3.5.45(typescript@6.0.3))':
+  '@whatsaaaa/design-system@1.1.0(@playwright/test@1.65.0)(vue@3.5.45(typescript@6.0.3))':
     dependencies:
       '@terrazzo/token-types': 2.10.0
     optionalDependencies:
       '@playwright/test': 1.65.0
       vue: 3.5.45(typescript@6.0.3)
 
-  '@whatsaaaa/form-builder-affects@0.2.2-rc.0(@whatsaaaa/form-builder-schema@1.0.0-rc.0(valibot@1.5.0(typescript@6.0.3)))(valibot@1.5.0(typescript@6.0.3))':
+  '@whatsaaaa/form-builder-affects@0.2.2-rc.0(@whatsaaaa/form-builder-schema@1.0.0-rc.3(valibot@1.5.0(typescript@6.0.3)))(valibot@1.5.0(typescript@6.0.3))':
     dependencies:
-      '@whatsaaaa/form-builder-schema': 1.0.0-rc.0(valibot@1.5.0(typescript@6.0.3))
+      '@whatsaaaa/form-builder-schema': 1.0.0-rc.3(valibot@1.5.0(typescript@6.0.3))
       valibot: 1.5.0(typescript@6.0.3)
 
-  '@whatsaaaa/form-builder-schema@1.0.0-rc.0(valibot@1.5.0(typescript@6.0.3))':
+  '@whatsaaaa/form-builder-schema@1.0.0-rc.3(valibot@1.5.0(typescript@6.0.3))':
     dependencies:
       valibot: 1.5.0(typescript@6.0.3)
 
-  '@whatsaaaa/form-builder-vue@1.0.0-rc.0(@formisch/vue@1.2.0(typescript@6.0.3)(valibot@1.5.0(typescript@6.0.3))(vue@3.5.45(typescript@6.0.3)))(@whatsaaaa/form-builder-schema@1.0.0-rc.0(valibot@1.5.0(typescript@6.0.3)))(valibot@1.5.0(typescript@6.0.3))(vue@3.5.45(typescript@6.0.3))':
+  '@whatsaaaa/form-builder-vue@1.0.0-rc.3(@formisch/vue@1.2.0(typescript@6.0.3)(valibot@1.5.0(typescript@6.0.3))(vue@3.5.45(typescript@6.0.3)))(@whatsaaaa/form-builder-schema@1.0.0-rc.3(valibot@1.5.0(typescript@6.0.3)))(valibot@1.5.0(typescript@6.0.3))(vue@3.5.45(typescript@6.0.3))':
     dependencies:
       '@formisch/vue': 1.2.0(typescript@6.0.3)(valibot@1.5.0(typescript@6.0.3))(vue@3.5.45(typescript@6.0.3))
-      '@whatsaaaa/form-builder-schema': 1.0.0-rc.0(valibot@1.5.0(typescript@6.0.3))
+      '@whatsaaaa/form-builder-schema': 1.0.0-rc.3(valibot@1.5.0(typescript@6.0.3))
       valibot: 1.5.0(typescript@6.0.3)
       vue: 3.5.45(typescript@6.0.3)
 
